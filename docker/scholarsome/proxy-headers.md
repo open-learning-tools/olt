@@ -36,3 +36,8 @@ If Scholarsome is extended to consume proxy identity directly, prefer a small
 adapter that maps these headers into the app's existing user/session model. Do
 not create local accounts from headers without validating that the request came
 through the trusted reverse proxy path.
+
+The local xAPI browser forwarder does not read these headers because they are
+only forwarded from Nginx to the upstream container, not exposed to client-side
+JavaScript. Use opaque client-visible actors for demo route statements unless a
+trusted server-side adapter is added.

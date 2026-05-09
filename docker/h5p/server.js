@@ -12,11 +12,20 @@ const port = Number(process.env.PORT || 8080);
 const publicDir = path.join(__dirname, "public");
 const contentDir = process.env.H5P_CONTENT_DIR || path.join(__dirname, "content");
 const h5pDistDir = path.join(__dirname, "node_modules", "h5p-standalone", "dist");
+const xapiConfig = {
+  ingestUrl: process.env.OLT_XAPI_PUBLIC_INGEST_URL || "",
+  activityPrefix: process.env.OLT_XAPI_ACTIVITY_PREFIX || ""
+};
 
 app.disable("x-powered-by");
 
 app.get("/healthz", (_req, res) => {
   res.type("text/plain").send("ok");
+});
+
+app.get("/api/config", (_req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.json({ xapi: xapiConfig });
 });
 
 app.get("/api/content", async (_req, res, next) => {

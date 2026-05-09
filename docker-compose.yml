@@ -1,5 +1,10 @@
 name: olt
 
+x-olt-xapi-env: &olt_xapi_env
+  OLT_XAPI_PUBLIC_INGEST_URL: "${OLT_XAPI_PUBLIC_INGEST_URL:-http://lrs.localhost/ingest/xapi/statements}"
+  OLT_XAPI_INTERNAL_INGEST_URL: "${OLT_XAPI_INTERNAL_INGEST_URL:-http://xapi-ingest:8090/xapi/statements}"
+  OLT_XAPI_ACTIVITY_PREFIX: "${OLT_XAPI_ACTIVITY_PREFIX:-http://olt.localhost/xapi/activities}"
+
 services:
   nginx:
     image: nginx:1.27-alpine
@@ -14,6 +19,7 @@ services:
       - code-server
       - librechat
       - ralph
+      - xapi-ingest
       - oauth2-proxy-cryptpad
       - oauth2-proxy-scholarsome
       - oauth2-proxy-code
@@ -21,6 +27,7 @@ services:
       - "${NGINX_HTTP_PORT:-80}:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./docker/scholarsome/olt-xapi-forwarder.js:/usr/share/nginx/olt/scholarsome/olt-xapi-forwarder.js:ro
     networks:
       olt_network:
         aliases:
@@ -147,6 +154,7 @@ services:
       CRYPTPAD_OIDC_ISSUER: "${OIDC_ISSUER_URL:-http://olt.localhost}"
       CRYPTPAD_OAUTH_CLIENT_ID: "${CRYPTPAD_OAUTH_CLIENT_ID}"
       CRYPTPAD_OAUTH_CLIENT_SECRET: "${CRYPTPAD_OAUTH_CLIENT_SECRET}"
+      <<: *olt_xapi_env
     volumes:
       - cryptpad_blob:/cryptpad/blob
       - cryptpad_block:/cryptpad/block
@@ -220,10 +228,12 @@ services:
       PEERTUBE_SMTP_DISABLE_STARTTLS: "true"
       PEERTUBE_SMTP_FROM: "${PEERTUBE_SMTP_FROM:-noreply@olt.localhost}"
       PEERTUBE_REDIRECT_ON_SINGLE_EXTERNAL_AUTH: "true"
+      <<: *olt_xapi_env
     volumes:
       - peertube_assets:/app/client/dist
       - peertube_data:/data
       - ./docker/peertube/config:/config:ro
+      - ./docker/peertube/plugins:/bootstrap/plugins:ro
     expose:
       - "9000"
     networks:
@@ -241,10 +251,14 @@ services:
       PEERTUBE_OIDC_CLIENT_ID: "${PEERTUBE_OIDC_CLIENT_ID}"
       PEERTUBE_OIDC_CLIENT_SECRET: "${PEERTUBE_OIDC_CLIENT_SECRET}"
       PEERTUBE_OIDC_SCOPE: "${PEERTUBE_OIDC_SCOPE:-openid email profile}"
+      PEERTUBE_OLT_XAPI_PLUGIN_VERSION: "${PEERTUBE_OLT_XAPI_PLUGIN_VERSION:-0.1.0}"
+      PEERTUBE_OLT_XAPI_PLUGIN_SOURCE: "/bootstrap/plugins/peertube-plugin-olt-xapi"
+      <<: *olt_xapi_env
     command: ["sh", "/bootstrap/bootstrap-plugin.sh"]
     volumes:
       - peertube_data:/data
       - ./docker/peertube/bootstrap-plugin.sh:/bootstrap/bootstrap-plugin.sh:ro
+      - ./docker/peertube/plugins:/bootstrap/plugins:ro
     networks:
       - olt_network
 
@@ -285,6 +299,8 @@ services:
       S3_STORAGE_BUCKET: ""
       SCHOLARSOME_RECAPTCHA_SITE: ""
       SCHOLARSOME_RECAPTCHA_SECRET: ""
+      OLT_XAPI_SERVICE_ID: "scholarsome"
+      <<: *olt_xapi_env
     expose:
       - "3000"
     volumes:
@@ -316,6 +332,7 @@ services:
     environment:
       NODE_ENV: "development"
       PORT: "8080"
+      <<: *olt_xapi_env
     volumes:
       - ./docker/h5p/content:/app/content
     expose:
@@ -331,10 +348,15 @@ services:
       TZ: "${TZ:-America/New_York}"
       SUDO_PASSWORD: "${CODE_SERVER_SUDO_PASSWORD:-dev-password}"
       PROXY_DOMAIN: "code.localhost"
+      OLT_XAPI_SERVICE_ID: "code-server"
+      OLT_XAPI_SERVICE_NAME: "OLT Code workspace"
+      OLT_CODE_SERVER_PUBLIC_URL: "http://code.localhost"
+      <<: *olt_xapi_env
     volumes:
       - code_server_config:/config
       - ./docker/code-server/config.yaml:/config/.config/code-server/config.yaml:ro
       - ./docker/code-server/workspace/olt.code-workspace:/config/workspace/olt.code-workspace:ro
+      - ./docker/code-server/hooks/30-olt-xapi-startup.sh:/custom-cont-init.d/30-olt-xapi-startup.sh:ro
       - ./:/workspace/olt
     expose:
       - "8443"
@@ -357,9 +379,12 @@ services:
         condition: service_started
       redis:
         condition: service_started
+      xapi-ingest:
+        condition: service_started
     environment:
       HOST: "0.0.0.0"
       PORT: "3080"
+      NODE_OPTIONS: "--require /app/olt-xapi-forwarder.cjs"
       DOMAIN_CLIENT: "http://chat.localhost"
       DOMAIN_SERVER: "http://chat.localhost"
       ENDPOINTS: "${LIBRECHAT_ENDPOINTS:-openAI,agents}"
@@ -378,8 +403,11 @@ services:
       OPENID_SESSION_SECRET: "${LIBRECHAT_OPENID_SESSION_SECRET}"
       OPENID_CALLBACK_URL: "${LIBRECHAT_OIDC_CALLBACK_PATH:-/oauth/openid/callback}"
       OPENID_SCOPE: "${LIBRECHAT_OIDC_SCOPE:-openid profile email}"
+      OLT_XAPI_SOURCE_NAME: "Open Learning Tools Chat"
+      <<: *olt_xapi_env
     volumes:
       - ./docker/librechat/librechat.yaml:/app/librechat.yaml:ro
+      - ./docker/librechat/xapi-forwarder.cjs:/app/olt-xapi-forwarder.cjs:ro
       - librechat_images:/app/client/public/images
       - librechat_uploads:/app/uploads
       - librechat_logs:/app/api/logs
@@ -430,6 +458,26 @@ services:
       - ralph_data:/app/.ralph
     expose:
       - "8100"
+    networks:
+      - olt_network
+
+  xapi-ingest:
+    image: node:22-alpine
+    working_dir: /app
+    command: ["node", "server.mjs"]
+    depends_on:
+      ralph:
+        condition: service_started
+    environment:
+      PORT: "8090"
+      RALPH_XAPI_STATEMENTS_URL: "http://ralph:8100/xAPI/statements"
+      RALPH_LRS_USERNAME: "${RALPH_LRS_USERNAME:-admin}"
+      RALPH_LRS_PASSWORD: "${RALPH_LRS_PASSWORD}"
+      OLT_XAPI_CORS_ORIGIN: "${OLT_XAPI_CORS_ORIGIN:-*}"
+    volumes:
+      - ./docker/xapi-ingest:/app:ro
+    expose:
+      - "8090"
     networks:
       - olt_network
 

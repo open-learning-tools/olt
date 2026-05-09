@@ -7,6 +7,7 @@ This folder contains the CryptPad configuration assets mounted by the OLT local 
 - `config/config.js`: local server config for `http://cryptpad.localhost` with a separate sandbox origin at `http://cryptpad-sandbox.localhost`.
 - `config/sso.js`: local OIDC SSO config that reads the Docs client credentials from container environment variables.
 - `customize/application_config.js`: minimal browser-side customization with no secrets.
+- `customize/olt-xapi.js`: lightweight browser-side xAPI visit instrumentation for Docs wrapper pages.
 - `plugins/sso/`: CryptPad's official SSO plugin, vendored at tag `0.1.0` for compatibility with the `version-2024.12.0` image.
 - `nginx/cryptpad-server.conf`: reference Nginx server block that forwards normal HTTP traffic to port `3000` and websocket traffic to port `3003`.
 
@@ -22,6 +23,8 @@ environment:
   CRYPTPAD_OIDC_ISSUER: "${OIDC_ISSUER_URL:-http://olt.localhost}"
   CRYPTPAD_OAUTH_CLIENT_ID: "${CRYPTPAD_OAUTH_CLIENT_ID}"
   CRYPTPAD_OAUTH_CLIENT_SECRET: "${CRYPTPAD_OAUTH_CLIENT_SECRET}"
+  OLT_XAPI_PUBLIC_INGEST_URL: "${OLT_XAPI_PUBLIC_INGEST_URL:-}"
+  OLT_XAPI_ACTIVITY_PREFIX: "${OLT_XAPI_ACTIVITY_PREFIX:-}"
 volumes:
   - ./docker/cryptpad/config/config.js:/cryptpad/config/config.js:ro
   - ./docker/cryptpad/config/sso.js:/cryptpad/config/sso.js:ro
@@ -35,6 +38,12 @@ expose:
   - "3000"
   - "3003"
 ```
+
+At container startup, `patch-auto-sso.js` injects the public xAPI config and
+`/customize/olt-xapi.js` into generated CryptPad HTML pages. If either xAPI env
+value is blank, the browser hook is a no-op. The hook posts anonymous demo visit
+statements to the configured ingest URL without credentials and does not include
+document URL fragments.
 
 Do not also mount a named volume at `/cryptpad/config` or `/cryptpad/customize`; it can mask the checked-in local config. The SSO plugin generates browser assets under `customize/www/`, which is intentionally gitignored.
 

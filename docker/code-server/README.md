@@ -39,6 +39,35 @@ The proxy-auth layer may forward identity headers such as:
 
 code-server does not consume those headers by default. They are available for future extensions, audit wrappers, or workspace startup scripts.
 
+## xAPI local-dev activity
+
+Mount `hooks/30-olt-xapi-startup.sh` into the LinuxServer image's custom init
+hook directory to emit a coarse startup activity to the central Ralph ingest
+endpoint:
+
+```yaml
+environment:
+  OLT_XAPI_INTERNAL_INGEST_URL: "http://lrs.localhost/ingest/xapi/statements"
+  OLT_XAPI_PUBLIC_INGEST_URL: "http://lrs.localhost/ingest/xapi/statements"
+  OLT_XAPI_ACTIVITY_PREFIX: "https://openlearningtools.example/activities"
+volumes:
+  - ./docker/code-server/hooks/30-olt-xapi-startup.sh:/custom-cont-init.d/30-olt-xapi-startup.sh:ro
+```
+
+The hook posts a single `initialized` xAPI statement when the container starts.
+It uses `OLT_XAPI_INTERNAL_INGEST_URL` for server-side delivery and never embeds
+LRS credentials or oauth2-proxy user data. Because code-server is protected by
+oauth2-proxy, this is a practical local-dev service activity signal rather than
+a per-user editor-open event.
+
+Optional service identifiers:
+
+- `OLT_XAPI_SERVICE_ID`, default `code-server`
+- `OLT_XAPI_SERVICE_NAME`, default `OLT code-server local development`
+- `OLT_CODE_SERVER_PUBLIC_URL`, default `http://code.localhost`
+- `OLT_XAPI_INGEST_TIMEOUT_SECONDS`, default `3`
+
 ## Parent integration notes
 
-The parent stack mounts these assets in `docker-compose.yml`. Keep `code.localhost` protected by `oauth2-proxy-code` before exposing `auth: none`.
+The parent stack mounts these assets in `docker-compose.yml`. Keep
+`code.localhost` protected by `oauth2-proxy-code` before exposing `auth: none`.

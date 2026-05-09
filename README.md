@@ -55,15 +55,38 @@ Some services still need their own app-level setup after the containers are reac
 - Docs: protected by `oauth2-proxy` on `cryptpad.localhost` and configured with the local OIDC SSO plugin; `cryptpad-sandbox.localhost` remains reachable as the required sandbox origin.
 - Flashcards and Code: protected by `oauth2-proxy`; deeper in-app user mapping can be added later.
 - Quizzes: add real H5P content packages to the lightweight host.
-- LRS: configure each tool to send xAPI statements once instrumentation is added.
+- LRS: local-dev xAPI forwarding is wired through the ingest bridge described below.
 
 ## xAPI Endpoint
 
-Use Ralph with Basic Auth from `.env`:
+Ralph remains available directly with Basic Auth from `.env`:
 
 ```txt
 http://lrs.localhost/xAPI/statements
 ```
+
+Services should normally send statements through the local ingest bridge instead
+of using Ralph credentials directly:
+
+```txt
+Browser/client code: http://lrs.localhost/ingest/xapi/statements
+Container/server code: http://xapi-ingest:8090/xapi/statements
+```
+
+The bridge forwards to Ralph server-side, so sub-service browser code never
+needs the LRS password. Compose passes these URLs to services as
+`OLT_XAPI_PUBLIC_INGEST_URL`, `OLT_XAPI_INTERNAL_INGEST_URL`, and
+`OLT_XAPI_ACTIVITY_PREFIX`.
+
+Current local-dev coverage:
+
+- Videos: PeerTube plugin emits server video upload/view events and browser
+  playback events.
+- Docs: CryptPad customization emits best-effort page/app visit events.
+- Quizzes: H5P host forwards H5P xAPI statements from the H5P dispatcher.
+- Flashcards: Nginx injects a browser route-visit forwarder for Scholarsome.
+- Code: code-server emits a container startup activity through its init hook.
+- AI Chat: LibreChat preload emits session/chat/conversation activity.
 
 For local verification:
 

@@ -4,6 +4,17 @@ const emptyState = document.getElementById("empty-state");
 const playerRegion = document.getElementById("player-region");
 
 let contentItems = [];
+let appConfig = { xapi: { ingestUrl: "", activityPrefix: "" } };
+let xapiDispatcherAttached = false;
+
+async function loadAppConfig() {
+  const response = await fetch("/api/config", { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Failed to load app config: ${response.status}`);
+  }
+
+  return response.json();
+}
 
 async function loadContentList() {
   const response = await fetch("/api/content");
@@ -41,6 +52,58 @@ function renderContentOptions() {
   }
 }
 
+function buildActivityIri(contentId) {
+  const activityPrefix = appConfig.xapi?.activityPrefix?.trim();
+  if (!activityPrefix) {
+    return `${window.location.origin}/content/${contentId}`;
+  }
+
+  return `${activityPrefix.replace(/\/+$/, "")}/h5p/${encodeURIComponent(contentId)}`;
+}
+
+function getStatementFromEvent(event) {
+  return event?.data?.statement || event?.statement || null;
+}
+
+async function forwardXapiStatement(statement) {
+  const ingestUrl = appConfig.xapi?.ingestUrl?.trim();
+  if (!ingestUrl || !statement) {
+    return;
+  }
+
+  const response = await fetch(ingestUrl, {
+    method: "POST",
+    mode: "cors",
+    credentials: "omit",
+    keepalive: true,
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(statement)
+  });
+
+  if (!response.ok) {
+    throw new Error(`xAPI forward failed: ${response.status}`);
+  }
+}
+
+function attachXapiForwarder() {
+  if (xapiDispatcherAttached || !window.H5P?.externalDispatcher) {
+    return;
+  }
+
+  window.H5P.externalDispatcher.on("xAPI", (event) => {
+    const statement = getStatementFromEvent(event);
+    console.info("xAPI event", statement || event);
+
+    forwardXapiStatement(statement).catch((error) => {
+      console.warn(error);
+    });
+  });
+
+  xapiDispatcherAttached = true;
+}
+
 async function renderPlayer(contentId) {
   const item = contentItems.find((candidate) => candidate.id === contentId);
   if (!item) {
@@ -57,21 +120,18 @@ async function renderPlayer(contentId) {
     frame: true,
     fullScreen: true,
     reportingIsEnabled: true,
-    xAPIObjectIRI: `${window.location.origin}/content/${item.id}`
+    xAPIObjectIRI: buildActivityIri(item.id)
   };
 
   await new H5PStandalone.H5P(container, options);
-
-  if (window.H5P?.externalDispatcher) {
-    window.H5P.externalDispatcher.on("xAPI", (event) => {
-      console.info("xAPI event", event?.data?.statement || event);
-    });
-  }
+  attachXapiForwarder();
 }
 
 async function boot() {
   try {
-    contentItems = await loadContentList();
+    const [config, content] = await Promise.all([loadAppConfig(), loadContentList()]);
+    appConfig = config;
+    contentItems = content;
     renderContentOptions();
 
     if (contentItems.length > 0) {
