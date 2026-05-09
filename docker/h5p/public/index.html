@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quizzes | OLT Local</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/assets/h5p/main.bundle.js" charset="UTF-8" defer></script>
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Open Learning Tools</p>
+          <h1>Quizzes</h1>
+        </div>
+        <a class="health-link" href="/healthz">Health</a>
+      </header>
+
+      <section class="toolbar" aria-label="Quiz content selector">
+        <label for="content-select">Content</label>
+        <select id="content-select">
+          <option value="">Loading...</option>
+        </select>
+      </section>
+
+      <section id="empty-state" class="empty-state" hidden>
+        <h2>No local quiz content found</h2>
+        <p>
+          Add extracted content packages under <code>docker/h5p/content/&lt;name&gt;</code>.
+          Each package should contain <code>h5p.json</code> and
+          <code>content/content.json</code>.
+        </p>
+      </section>
+
+      <section id="player-region" class="player-region" aria-live="polite">
+        <div id="h5p-container"></div>
+      </section>
+    </main>
+  </body>
+</html>

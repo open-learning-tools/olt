@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "name": "Open Learning Tools",
+      "path": "/workspace/olt"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "**/.venv": true,
+      "**/node_modules": true
+    },
+    "terminal.integrated.cwd": "/workspace/olt"
+  }
+}

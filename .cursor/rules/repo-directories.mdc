@@ -1,6 +1,6 @@
 ---
 description: Repository structure documentation
-globs:
+globs: 
 alwaysApply: false
 ---
 This workspace contains multiple repositories:

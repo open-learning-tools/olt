@@ -6,7 +6,7 @@
   "variables": {
     "name_snake": "open_learning_tools",
     "name_pretty": "Open Learning Tools",
-    "github_user": "gabemontague",
+    "github_user": "open-learning-tools",
     "marketing_description": "Open source learning tools unified by local SSO and xAPI activity tracking.",
     "with_frontend": true,
     "with_github": false,
@@ -19,5 +19,9 @@
     "ui_package_name": "openbase-ui",
     "web_package_name": "open-learning-tools-web",
     "cdn_base_url": "https://cdn.openbase.app/open-learning-tools/"
-  }
+  },
+  "children": [
+    "api",
+    "web"
+  ]
 }

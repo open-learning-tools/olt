@@ -2,7 +2,7 @@
   "repos": [
     {
       "name": "api",
-      "url": "https://github.com/gabemontague/open-learning-tools-api",
+      "url": "https://github.com/open-learning-tools/open-learning-tools-api",
       "description": "Open Learning Tools API package"
     },
     {
@@ -22,7 +22,7 @@
     },
     {
       "name": "web",
-      "url": "https://github.com/gabemontague/open-learning-tools-web",
+      "url": "https://github.com/open-learning-tools/open-learning-tools-web",
       "description": "Open Learning Tools React web frontend"
     },
     {

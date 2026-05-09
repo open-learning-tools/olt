@@ -1,0 +1,16 @@
+{
+  "name": "olt-h5p-dev-host",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "4.22.1",
+    "h5p-standalone": "3.8.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

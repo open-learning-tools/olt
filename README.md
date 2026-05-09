@@ -1,66 +1,73 @@
 # Open Learning Tools
 
-This workspace contains a generated Django API package, the shared API core runtime, reusable auth/UI packages, a React web app, and deployment tooling.
+Local development stack for OLT: a boilersync Django/React wrapper app plus self-hosted learning tools behind one local Nginx router.
 
-## Local Setup
+## Hosts
 
-Run:
+Add these names to `/etc/hosts`:
+
+```txt
+127.0.0.1 olt.localhost auth.localhost cryptpad.localhost cryptpad-sandbox.localhost peertube.localhost scholarsome.localhost h5p.localhost code.localhost chat.localhost lrs.localhost
+```
+
+Most browsers already resolve `*.localhost`, but the hosts entry keeps CLI tools and older resolvers predictable.
+
+## Start
+
+Create local secrets from the example and start the stack:
 
 ```bash
-./scripts/setup.sh
+cp .env.example .env
+docker compose up -d --build
 ```
 
-The setup script syncs the Multi workspace, prepares the Django runtime, and installs frontend packages when `with_frontend` is enabled.
-It also scaffolds the full auth screen set from `auth-client` into `web/src/auth/` on first setup, skipping files that already exist.
+The Django API is built from this Multi workspace using `api-core` plus the generated `api/` package. Project Django settings live in `api/open_learning_tools_api/settings.py`; `api-core` is left as the shared runtime.
 
-Common entry points:
+## Local URLs
 
-- `api`: generated Django app package for project-specific backend code
-- `api-core`: shared Django runtime and settings skeleton
-- `api-client`: local ignored Orval TypeScript client package; run `pnpm --filter open-learning-tools-api-client generate-client` after API schema changes
-- `auth-client`: reusable django-allauth React client
-- `ui`: shared React UI package
-- `web`: React frontend
-- `deploy`: deployment CLI and Terraform stack
+- Wrapper: `http://olt.localhost`
+- Admin / identity provider: `http://auth.localhost/admin/`
+- Docs: `http://cryptpad.localhost`
+- Videos: `http://peertube.localhost`
+- Flashcards: `http://scholarsome.localhost`
+- Quizzes: `http://h5p.localhost`
+- Code: `http://code.localhost`
+- AI Chat: `http://chat.localhost`
+- LRS: `http://lrs.localhost`
 
-To refresh the local auth scaffold later:
+## SSO
+
+The Django backend enables `django-oauth-toolkit` OIDC at:
+
+```txt
+http://olt.localhost/.well-known/openid-configuration
+http://olt.localhost/o/.well-known/jwks.json
+```
+
+On backend startup, local OAuth clients are bootstrapped for Videos, AI Chat, Docs proxy auth, Flashcards proxy auth, and Code proxy auth using values from `.env`. The Videos container also has a bootstrap helper that installs/configures its OpenID Connect plugin from those same values.
+
+## Post-Start Configuration
+
+Some services still need their own app-level setup after the containers are reachable:
+
+- Videos: OIDC is bootstrapped automatically; complete the first-run profile/admin prompts when they appear.
+- AI Chat: OIDC is configured through `.env`; model/provider keys are loaded from an untracked local provider env file, and `LIBRECHAT_ENDPOINTS` defaults to `openAI,agents`.
+- Docs: protected by `oauth2-proxy` on `cryptpad.localhost` and configured with the local OIDC SSO plugin; `cryptpad-sandbox.localhost` remains reachable as the required sandbox origin.
+- Flashcards and Code: protected by `oauth2-proxy`; deeper in-app user mapping can be added later.
+- Quizzes: add real H5P content packages to the lightweight host.
+- LRS: configure each tool to send xAPI statements once instrumentation is added.
+
+## xAPI Endpoint
+
+Use Ralph with Basic Auth from `.env`:
+
+```txt
+http://lrs.localhost/xAPI/statements
+```
+
+For local verification:
 
 ```bash
-pnpm auth:overwrite
+curl -u "$RALPH_LRS_USERNAME:$RALPH_LRS_PASSWORD" \
+  http://lrs.localhost/xAPI/statements
 ```
-
-The web package proxies `/api` and `/_allauth` to `VITE_API_BASE_URL`, defaulting to `http://127.0.0.1:8000`, during Vite development. Its dev and build scripts first build the local generated `api-client` package so package exports resolve even when running web commands directly.
-
-## Deployment
-
-Use the `deploy` repo and the `openbase-deploy` CLI for AWS/Terraform/ECS deployment.
-
-Deployment metadata is stored outside the repo:
-
-```text
-~/.openbase/deployments/<stack-name>/<environment>/deployment.toml
-```
-
-Initialize metadata for a new stack:
-
-```bash
-openbase-deploy init-stack open-learning-tools prod \
-  --web-hostname app.example.com \
-  --cdn-hostname assets.example.com \
-  --cloudflare-zone-name example.com \
-  --web-command "/app/.venv/bin/gunicorn config.asgi:application --log-file - -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000" \
-  --worker-command "/app/.venv/bin/taskiq worker --log-level=INFO --max-threadpool-threads=2 config.taskiq_config:broker config.taskiq_tasks" \
-  --deploy-command "/app/.venv/bin/python manage.py migrate" \
-  --app-requirement git+https://github.com/gabemontague/open-learning-tools-api
-```
-
-Then deploy:
-
-```bash
-openbase-deploy build open-learning-tools prod --app-dir web
-OPENBASE_DEPLOY_DB_PASSWORD='...' openbase-deploy apply open-learning-tools prod --auto-approve
-CLOUDFLARE_API_TOKEN='...' openbase-deploy cloudflare-setup open-learning-tools prod
-openbase-deploy deploy open-learning-tools prod
-```
-
-The deployment stack is always web + worker. The deploy one-off command is metadata, so Django migrations are a project choice rather than behavior hard-coded into `openbase-deploy`.

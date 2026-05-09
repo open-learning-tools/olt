@@ -1,0 +1,15 @@
+# BEGIN multi-managed: search-inside-gitignored-repos
+# Allow us to search inside these gitignored directories
+!api/
+!api
+!auth-client/
+!auth-client
+!api-core/
+!api-core
+!ui/
+!ui
+!web/
+!web
+!deploy/
+!deploy
+# END multi-managed: search-inside-gitignored-repos

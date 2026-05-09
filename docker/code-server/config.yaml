@@ -1,0 +1,9 @@
+# Local-dev code-server config for OLT.
+# Browser authentication is expected to happen at oauth2-proxy-code.
+bind-addr: 0.0.0.0:8443
+auth: none
+cert: false
+
+# Keep user data inside the linuxserver/code-server /config mount.
+user-data-dir: /config/data
+extensions-dir: /config/extensions
