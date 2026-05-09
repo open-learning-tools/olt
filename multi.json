@@ -1,0 +1,34 @@
+{
+  "repos": [
+    {
+      "name": "api",
+      "url": "https://github.com/gabemontague/open-learning-tools-api",
+      "description": "Open Learning Tools API package"
+    },
+    {
+      "name": "auth-client",
+      "url": "https://github.com/openbase-community/openbase-drf-api-client",
+      "description": "OpenBase auth and django-allauth React client"
+    },
+    {
+      "name": "api-core",
+      "url": "https://github.com/openbase-community/openbase-drf-api-core",
+      "description": "Open Learning Tools Django API core runtime"
+    },
+    {
+      "name": "ui",
+      "url": "https://github.com/openbase-community/openbase-ui",
+      "description": "Shared OpenBase React UI package"
+    },
+    {
+      "name": "web",
+      "url": "https://github.com/gabemontague/open-learning-tools-web",
+      "description": "Open Learning Tools React web frontend"
+    },
+    {
+      "url": "https://github.com/openbase-community/openbase-deploy",
+      "name": "deploy",
+      "description": "OpenBase deployment CLI and reusable Terraform app stack"
+    }
+  ]
+}

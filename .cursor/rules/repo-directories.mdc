@@ -1,0 +1,13 @@
+---
+description: Repository structure documentation
+globs:
+alwaysApply: false
+---
+This workspace contains multiple repositories:
+
+- `api`: Open Learning Tools API package
+- `auth-client`: OpenBase auth and django-allauth React client
+- `api-core`: Open Learning Tools Django API core runtime
+- `ui`: Shared OpenBase React UI package
+- `web`: Open Learning Tools React web frontend
+- `deploy`: OpenBase deployment CLI and reusable Terraform app stack

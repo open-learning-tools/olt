@@ -1,0 +1,10 @@
+[tools.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["api", "api-core", "deploy"]
+
+[tool.uv.sources]
+open-learning-tools-api = { workspace = true }
+api-core = { workspace = true }
+openbase-deploy = { workspace = true }

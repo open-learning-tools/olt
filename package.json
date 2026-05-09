@@ -1,0 +1,11 @@
+{
+  "name": "open-learning-tools-workspace",
+  "private": true,
+  "packageManager": "pnpm@10.18.0",
+  "scripts": {
+    "auth:generate": "node ./auth-client/scripts/generate-auth-screens.mjs --target ./web",
+    "auth:overwrite": "node ./auth-client/scripts/generate-auth-screens.mjs --target ./web --overwrite",
+    "dev": "pnpm -r --parallel --stream --filter openbase-auth-client --filter open-learning-tools-api-client --filter openbase-ui --filter open-learning-tools-web run dev",
+    "build": "pnpm --filter open-learning-tools-api-client generate-client && pnpm --filter openbase-auth-client build && pnpm --filter open-learning-tools-api-client build && pnpm --filter openbase-ui build && pnpm --filter open-learning-tools-web build"
+  }
+}

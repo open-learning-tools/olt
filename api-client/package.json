@@ -1,0 +1,46 @@
+{
+  "name": "open-learning-tools-api-client",
+  "version": "0.1.0",
+  "description": "Generated OpenAPI client for Open Learning Tools APIs",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./fetch-client": {
+      "types": "./dist/fetch-client.d.ts",
+      "import": "./dist/fetch-client.js"
+    },
+    "./models": {
+      "types": "./dist/generated/models/index.d.ts",
+      "import": "./dist/generated/models/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "generate-openapi": "uv run --project ../api-core python ../api-core/manage.py spectacular --file ./openapi.json --format openapi-json --validate",
+    "generate-client": "pnpm run generate-openapi && pnpm exec orval --config ./orval.config.ts",
+    "generate-types": "pnpm run generate-client",
+    "prebuild": "pnpm run generate-client",
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "keywords": [
+    "open-learning-tools",
+    "openapi",
+    "api-client"
+  ],
+  "author": "Gabe Montague",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.5.5",
+    "orval": "^8.7.0",
+    "typescript": "^5.5.3"
+  }
+}

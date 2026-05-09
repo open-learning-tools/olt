@@ -1,0 +1,23 @@
+{
+  "template": "https://github.com/openbase-community/templates.git#django-react-workspace",
+  "template_commit": "54c639473202479cfa4d1bc7a39d4ae4159e6efb",
+  "name_snake": "open_learning_tools",
+  "name_pretty": "Open Learning Tools",
+  "variables": {
+    "name_snake": "open_learning_tools",
+    "name_pretty": "Open Learning Tools",
+    "github_user": "gabemontague",
+    "marketing_description": "Open source learning tools unified by local SSO and xAPI activity tracking.",
+    "with_frontend": true,
+    "with_github": false,
+    "api_package_name": "open_learning_tools_api",
+    "django_app_name": "open_learning_tools",
+    "api_prefix": "/api/",
+    "api_client_package_name": "open-learning-tools-api-client",
+    "api_client_export_name": "openLearningTools",
+    "auth_client_package_name": "openbase-auth-client",
+    "ui_package_name": "openbase-ui",
+    "web_package_name": "open-learning-tools-web",
+    "cdn_base_url": "https://cdn.openbase.app/open-learning-tools/"
+  }
+}

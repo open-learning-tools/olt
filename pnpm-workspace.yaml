@@ -1,0 +1,7 @@
+dangerouslyAllowAllBuilds: true
+
+packages:
+  - api-client
+  - auth-client
+  - ui
+  - web
