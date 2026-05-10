@@ -5,18 +5,26 @@ const ralphEndpoint = process.env.RALPH_XAPI_STATEMENTS_URL || "http://ralph:810
 const username = process.env.RALPH_LRS_USERNAME || "";
 const password = process.env.RALPH_LRS_PASSWORD || "";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": process.env.OLT_XAPI_CORS_ORIGIN || "*",
-  "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-  "Access-Control-Allow-Headers": "content-type,authorization,x-olt-service,x-olt-user",
-  "Access-Control-Max-Age": "86400"
-};
+function getCorsHeaders(req) {
+  const configuredOrigin = process.env.OLT_XAPI_CORS_ORIGIN || "*";
+  const requestOrigin = req.headers.origin;
+  const allowOrigin = configuredOrigin === "*" && requestOrigin ? requestOrigin : configuredOrigin;
 
-function sendJson(res, status, payload) {
+  return {
+    "Access-Control-Allow-Origin": allowOrigin,
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "content-type,authorization,x-olt-service,x-olt-user,x-experience-api-version",
+    "Access-Control-Max-Age": "86400",
+    "Vary": "Origin"
+  };
+}
+
+function sendJson(req, res, status, payload) {
   res.writeHead(status, {
     "content-type": "application/json; charset=utf-8",
     "cache-control": "no-store",
-    ...corsHeaders
+    ...getCorsHeaders(req)
   });
   res.end(JSON.stringify(payload));
 }
@@ -71,22 +79,45 @@ async function forwardStatements(body) {
   }
 }
 
+function actorHomePageFallback(req, statement) {
+  if (req.headers.origin) {
+    return req.headers.origin;
+  }
+
+  try {
+    return new URL(statement?.object?.id).origin;
+  } catch {
+    return "http://olt.localhost";
+  }
+}
+
+function normalizeStatement(req, statement) {
+  const normalized = structuredClone(statement);
+  const account = normalized?.actor?.account;
+
+  if (account && account.name && !account.homePage) {
+    account.homePage = actorHomePageFallback(req, normalized);
+  }
+
+  return normalized;
+}
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
 
   if (req.method === "OPTIONS") {
-    res.writeHead(204, corsHeaders);
+    res.writeHead(204, getCorsHeaders(req));
     res.end();
     return;
   }
 
   if (req.method === "GET" && url.pathname === "/healthz") {
-    sendJson(res, 200, { ok: true });
+    sendJson(req, res, 200, { ok: true });
     return;
   }
 
   if (req.method !== "POST" || url.pathname !== "/xapi/statements") {
-    sendJson(res, 404, { error: "Not found" });
+    sendJson(req, res, 404, { error: "Not found" });
     return;
   }
 
@@ -96,15 +127,16 @@ const server = http.createServer(async (req, res) => {
     const statements = Array.isArray(payload) ? payload : [payload];
 
     if (statements.length === 0 || statements.some((statement) => !statement || typeof statement !== "object")) {
-      sendJson(res, 400, { error: "Expected one xAPI statement object or an array of statement objects" });
+      sendJson(req, res, 400, { error: "Expected one xAPI statement object or an array of statement objects" });
       return;
     }
 
-    const forwarded = await forwardStatements(JSON.stringify(Array.isArray(payload) ? statements : statements[0]));
-    sendJson(res, 202, { ok: true, forwarded });
+    const normalizedStatements = statements.map((statement) => normalizeStatement(req, statement));
+    const forwarded = await forwardStatements(JSON.stringify(Array.isArray(payload) ? normalizedStatements : normalizedStatements[0]));
+    sendJson(req, res, 202, { ok: true, forwarded });
   } catch (error) {
     console.error(error);
-    sendJson(res, error.status || 500, {
+    sendJson(req, res, error.status || 500, {
       error: "Unable to ingest xAPI statements",
       detail: error.message
     });
