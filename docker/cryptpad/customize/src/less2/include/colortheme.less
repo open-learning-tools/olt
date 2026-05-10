@@ -1,0 +1,503 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Open Learning Tools
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ *
+ * OLT brand override for CryptPad's light color theme.
+ *
+ * This file replaces /cryptpad/customize.dist/src/less2/include/colortheme.less
+ * via the customize/ overlay served by Express.static. CryptPad's
+ * colortheme-all.less imports it by absolute path, so every dependent .less
+ * file (toolbar, login, drive, sidebar, alertify, etc.) picks up these tokens
+ * the next time the browser compiles less.
+ *
+ * Brand tokens (canonical OLT palette, expressed as the closest sRGB hex of
+ * the published oklch() values so they survive less.js compilation):
+ *
+ *   --olt-cream    oklch(0.985 0.006 230)  ~= #F8F8F4
+ *   --olt-navy     oklch(0.32  0.09  255)  ~= #1F2A55
+ *   --olt-navy-soft oklch(0.45 0.02  260)  ~= #5C6478
+ *   --olt-accent   oklch(0.70  0.10  200)  ~= #4FBED1
+ *   --olt-hairline oklch(0.86  0.01  80)   ~= #D8D5CC
+ *   white cards, 14px radius, pill buttons
+ */
+
+@colortheme_font: 'Inter', 'Helvetica Neue', 'Open Sans', sans-serif;
+@colortheme_app-font-size: 16px;
+@colortheme_app-font-size-small: 13px;
+@colortheme_app-font: @colortheme_app-font-size @colortheme_font;
+
+// ---------- Core OLT brand tokens ----------
+@olt_cream:        #F8F8F4;
+@olt_navy:         #1F2A55;
+@olt_navy_soft:    #5C6478;
+@olt_navy_deep:    #15224A;
+@olt_accent:       #4FBED1;
+@olt_accent_dark:  #2F8FA3;
+@olt_hairline:     #D8D5CC;
+@olt_card:         #FFFFFF;
+
+// Legacy aliases used throughout CryptPad. Repurposed so any reference to
+// "brand" picks up OLT navy and any "light blue" picks up OLT turquoise.
+@cryptpad_color_brand:        @olt_navy;
+@cryptpad_color_brand_300:    lighten(@cryptpad_color_brand, 24%);
+@cryptpad_color_brand_fade:   fade(@cryptpad_color_brand, 75%);
+@cryptpad_color_brand_fader:  fade(@cryptpad_color_brand, 50%);
+@cryptpad_color_brand_fadest: fade(@cryptpad_color_brand, 25%);
+
+// Per-app accent badges. Kept colorful for legibility, but with OLT-leaning
+// hues (cooler blues/teals where possible).
+@colortheme_apps: {
+    default: @cryptpad_color_brand;
+    drive: @cryptpad_color_brand;
+    pad: @olt_navy;
+    code: #C58800;
+    slide: #D85F0E;
+    poll: @olt_accent_dark;
+    form: @olt_accent_dark;
+    whiteboard: #6E33C8;
+    diagram: #B12FB7;
+    kanban: #6FAA38;
+    sheet: #2F6F4A;
+    doc: @olt_navy;
+    presentation: #B14F1B;
+    file: #B71F2A;
+}
+
+@colortheme_static_apps: {
+    default: @cryptpad_color_brand;
+    teams: #3A2DA0;
+    contacts: @olt_navy_soft;
+}
+
+// ---------- Greys re-anchored on the cream/navy axis ----------
+@cryptpad_color_white:    #FFF;
+@cryptpad_color_grey_50:  #FBFAF6;   // near-cream
+@cryptpad_color_grey_100: @olt_cream; // cream surface
+@cryptpad_color_grey_200: #EFEDE6;   // soft cream
+@cryptpad_color_grey_300: @olt_hairline;
+@cryptpad_color_grey_400: #B5B3AB;
+@cryptpad_color_grey_500: #8A8B92;
+@cryptpad_color_grey_600: #6E727F;
+@cryptpad_color_grey_700: @olt_navy_soft;
+@cryptpad_color_grey_800: #2D3559;
+@cryptpad_color_grey_850: #232A48;
+@cryptpad_color_grey_900: @olt_navy_deep;
+@cryptpad_color_grey_950: #0E173A;
+@cryptpad_color_black:    #000;
+
+@cryptpad_text_col:     @olt_navy;
+@cryptpad_text_col_inv: @olt_cream;
+
+@cryptpad_ui_shadow: 0px 14px 32px -22px fade(@olt_navy_deep, 38%);
+
+@cryptpad_color_blue:        @olt_navy;
+@cryptpad_color_light_blue:  @olt_accent;
+@cryptpad_color_red:         #C0392B;
+@cryptpad_color_red_fade:    fade(@cryptpad_color_red, 50%);
+@cryptpad_color_red_fader:   fade(@cryptpad_color_red, 15%);
+@cryptpad_color_warn_red:    @cryptpad_color_red_fade;
+@cryptpad_color_dark_red:    #8A1F14;
+@cryptpad_color_mid_red:     #F08576;
+@cryptpad_color_light_red:   #F9D6CF;
+@cryptpad_color_light_red_fade: fade(@cryptpad_color_light_red, 75%);
+@cryptpad_color_orange:      #E89030;
+@cryptpad_color_green:       #4F9D62;
+@cryptpad_color_green_fade:  fade(@cryptpad_color_green, 50%);
+@cryptpad_color_light_green: #C5E8C8;
+@cryptpad_color_light_green_fade: fade(@cryptpad_color_light_green, 20%);
+@cryptpad_color_light_yellow: #F5E5B7;
+@cryptpad_color_yellow_fade: fade(@cryptpad_color_light_yellow, 50%);
+@cryptpad_color_lighter_blue: lighten(@olt_accent, 22%);
+
+@cp_palette:
+    #F9D6CF,
+    #FCDFC8,
+    #F5E5B7,
+    #D9EDC4,
+    #C2E5D2,
+    #C8EFF1,
+    #C5D6F0,
+    #DBC9F1;
+@cp_palette-dark:
+    darken(extract(@cp_palette, 1), 50%),
+    darken(extract(@cp_palette, 2), 51%),
+    darken(extract(@cp_palette, 3), 52%),
+    darken(extract(@cp_palette, 4), 61%),
+    darken(extract(@cp_palette, 5), 57%),
+    darken(extract(@cp_palette, 6), 65%),
+    darken(extract(@cp_palette, 7), 50%),
+    darken(extract(@cp_palette, 8), 50%);
+
+@cryptpad_color_link: @olt_accent_dark;
+
+// Premium plans (largely unused locally, kept for safety)
+@cryptpad_color_basic: #DDEFFF;
+@cryptpad_color_pro:   #E4FFDD;
+@cryptpad_color_power: #F6DDFF;
+
+@cp_scrollbar-fg: fade(@olt_navy, 30%);
+@scrollbar_color: @cp_scrollbar-fg transparent;
+
+// ---------- Loading screen ----------
+@cp_loading-bg:           @olt_cream;
+@cp_loading-fg:           @olt_navy;
+@cp_loading-msg-bg:       @olt_card;
+@cp_loading-link:         @olt_accent_dark;
+@cp_loading-error-bg:     @cryptpad_color_warn_red;
+@cp_loading-error-fg:     @olt_navy;
+@cp_loading-progress-bg:  @olt_card;
+@cp_loading-progress-bar-bg: @olt_accent;
+@cp_loading-spinner:      @olt_navy_soft;
+
+// ---------- Chat ----------
+@cp_messenger-bg:     #EFEDE6;
+@cp_messenger-fg:     @olt_navy;
+@cp_messenger-notif:  @olt_navy_deep;
+@cp_messenger-friend: @olt_navy_deep;
+@cp_messenger-online: @cryptpad_color_light_green;
+
+// ---------- Alertify (modals/toasts) ----------
+@cp_alertify-bg:       @olt_card;
+@cp_alertify-fg:       @olt_navy;
+@cp_alertify-hover:    fade(@olt_navy, 12%);
+@cp_alertify-overlay:  fade(@olt_navy_deep, 50%);
+@cp_alertify-log-bg:   fade(@olt_navy, 92%);
+@cp_alertify-log-fg:   @olt_cream;
+@cp_alertify-warn-bg:  @cryptpad_color_red;
+@cp_alertify-disable-border: @cryptpad_color_grey_500;
+
+// ---------- Forms ----------
+@cp_forms-fg:               @olt_navy;
+@cp_forms-bg:               @olt_cream;
+@cp_forms-border:           @olt_hairline;
+@cp_forms-placeholder:      fade(@olt_navy_soft, 80%);
+@cp_forms-readonly:         fade(@olt_accent, 18%);
+@cp_forms-readonly-border:  @olt_accent;
+@cp_forms-disabled:         @cryptpad_color_grey_500;
+
+// ---------- Bootstrap alerts ----------
+@cp_alerts-warning-bg:    @cryptpad_color_yellow_fade;
+@cp_alerts-warning-fg:    @cryptpad_color_light_yellow;
+@cp_alerts-warning-text:  darken(@cp_alerts-warning-fg, 55%);
+@cp_alerts-danger-bg:     @cryptpad_color_light_red_fade;
+@cp_alerts-danger-fg:     @cryptpad_color_light_red;
+@cp_alerts-danger-text:   darken(@cp_alerts-danger-fg, 55%);
+@cp_alerts-info-bg:       fade(@olt_accent, 18%);
+@cp_alerts-info-text:     @olt_accent_dark;
+@cp_alerts-info-fg:       @olt_accent;
+@cp_alerts-success-bg:    @cryptpad_color_light_green_fade;
+@cp_alerts-success-fg:    @cryptpad_color_green;
+@cp_alerts-success-text:  darken(@cryptpad_color_green, 20%);
+
+// ---------- Buttons ----------
+// Primary buttons render as navy fills with cream text.
+@cp_buttons-fg:              @olt_navy;
+@cp_buttons-hover:           fade(@olt_navy, 10%);
+@cp_buttons-default:         @olt_card;
+@cp_buttons-default-color:   @olt_navy;
+@cp_buttons-default-border:  @olt_hairline;
+@cp_buttons-red:             @cryptpad_color_red;
+@cp_buttons-red-text:        @cryptpad_color_red;
+@cp_buttons-red-color:       #FFF;
+@cp_buttons-red-border:      transparent;
+@cp_buttons-primary:         @olt_navy;
+@cp_buttons-primary-text:    @olt_cream;
+@cp_buttons-primary-border:  transparent;
+@cp_buttons-disabled:        #93969F;
+@cp_buttons-disabled-text:   @olt_cream;
+@cp_buttons-disabled-border: #93969F;
+@cp_buttons-cancel:          @olt_card;
+@cp_buttons-cancel-border:   @olt_hairline;
+
+// ---------- Sidebar layout ----------
+@cp_sidebar-left-bg:         @olt_card;
+@cp_sidebar-left-fg:         @olt_navy;
+@cp_sidebar-left-item-bg:    #EFEDE6;
+@cp_sidebar-right-bg:        @olt_card;
+@cp_sidebar-right-fg:        @olt_navy;
+@cp_sidebar-left-active:     @olt_navy;
+@cp_sidebar-left-active-fg:  @olt_cream;
+@cp_sidebar-hint:            @olt_navy_soft;
+
+// ---------- Settings ----------
+@cp_settings_enabled:  @cryptpad_color_green;
+@cp_settings_disabled: @cryptpad_color_dark_red;
+
+// ---------- Drive (file browser) ----------
+@cp_drive-bg:                  @olt_card;
+@cp_drive-fg:                  @olt_navy;
+@cp_drive-header-fg:           fade(@olt_navy, 70%);
+@cp_drive-icon-hover:          fade(@olt_accent, 18%);
+@cp_drive-icon-border:         @olt_hairline;
+@cp_drive-thumb-bg:            transparent;
+@cp_drive-selected-bg:         fade(@olt_accent, 22%);
+@cp_drive-selected-fg:         @olt_navy;
+@cp_drive-selection-overlay:   fade(@olt_accent, 8%);
+@cp_drive-selection-bg:        #EFEDE6;
+@cp_drive-selection-fg:        @olt_navy;
+@cp_drive-droppable-bg:        fade(@olt_accent, 35%);
+@cp_drive-droppable-fg:        @olt_navy;
+@cp_drive-infobox-bg:          fade(@olt_accent, 18%);
+@cp_drive-infobox-fg:          @olt_navy;
+@cp_drive-warnbox-bg:          @cryptpad_color_light_red_fade;
+@cp_drive-warnbox-fg:          darken(@cp_alerts-danger-fg, 55%);
+@cp_drive-tree-branch:         @olt_navy_soft;
+
+// ---------- Context menu ----------
+@cp_context-bg:        @olt_card;
+@cp_context-border:    @olt_hairline;
+@cp_context-bg-hover:  fade(@olt_accent, 18%);
+@cp_context-bg-active: fade(@olt_accent, 32%);
+@cp_context-fg:        @olt_navy;
+@cp_context-icon:      @olt_navy;
+@cp_context-disabled:  @cryptpad_color_grey_400;
+
+// ---------- Tooltip ----------
+@cp_tooltip-bg: @olt_navy;
+@cp_tooltip-fg: @olt_cream;
+
+// ---------- Dropdown ----------
+@cp_dropdown-fg:        @olt_navy;
+@cp_dropdown-bg:        @olt_card;
+@cp_dropdown-bg-hover:  fade(@olt_accent, 18%);
+@cp_dropdown-bg-active: fade(@olt_accent, 32%);
+
+// ---------- Markdown ----------
+@cp_markdown-bg:         @olt_cream;
+@cp_markdown-border:     @olt_hairline;
+@cp_markdown-block-fg:   @olt_navy;
+@cp_markdown-block-bg:   #EFEDE6;
+
+// ---------- Avatar ----------
+@cp_avatar-bg: fade(@olt_accent, 25%);
+@cp_avatar-fg: @olt_navy;
+
+// ---------- Corner card ----------
+@cp_corner-bg:   @olt_card;
+@cp_corner-fg:   @olt_accent_dark;
+@cp_corner-text: @olt_navy;
+
+// ---------- Pad creation screen ----------
+@cp_creation-bg:         @olt_card;
+@cp_creation-fg:         @olt_navy;
+@cp_creation-template:   @olt_cream;
+@cp_creation-button-bg:  @olt_navy;
+@cp_creation-button-fg:  @olt_cream;
+@cp_creation-error-bg:   @olt_navy_deep;
+@cp_creation-error-fg:   @olt_cream;
+
+// ---------- Export / Upload ----------
+@cp_export-bg:        @olt_cream;
+@cp_export-fg:        @olt_navy;
+@cp_export-hint:      fade(@olt_navy, 70%);
+@cp_export-error-bg:  #EFEDE6;
+@cp_export-error-bg2: fade(@cryptpad_color_red, 18%);
+
+@cp_upload-fg:        @olt_accent_dark;
+@cp_upload-header:    @olt_hairline;
+@cp_upload-progress:  @olt_hairline;
+
+// ---------- Help ----------
+@cp_help-bg:   #EFEDE6;
+@cp_help-fg:   @olt_navy;
+@cp_help-link: @cryptpad_color_link;
+
+// ---------- Static / info pages (login, register, index, 404) ----------
+@cp_static-bg:            @olt_cream;
+@cp_static-fg:            @olt_navy;
+@cp_static-link:          @olt_accent_dark;
+@cp_static-title:         @olt_navy;
+@cp_static-footer:        fade(@olt_navy, 6%);
+@cp_static-footer-border: @olt_hairline;
+@cp_static-topbar-fg:     @olt_navy;
+@cp_static-card-bg:       @olt_card;
+@cp_static-danger:        fade(@cryptpad_color_red, 30%);
+@cp_static-img-invert-filter: none;
+
+// ---------- Limit bar ----------
+@cp_limit-fg:           @olt_navy;
+@cp-limit-bar-bg:       #EFEDE6;
+@cp-limit-bar-normal:   @cryptpad_color_green;
+@cp-limit-bar-warning:  @cryptpad_color_orange;
+@cp-limit-bar-above:    @cryptpad_color_red;
+
+// ---------- Mentions / autocomplete ----------
+@cp_mentions-bg:    fade(@olt_accent, 18%);
+@cp_mentions-hover: fade(@olt_accent, 28%);
+
+@cp_autocomplete-bg:     @olt_card;
+@cp_autocomplete-fg:     @olt_navy;
+@cp_autocomplete-border: @olt_hairline;
+@cp_autocomplete-hover:  fade(@olt_accent, 18%);
+
+// ---------- Modals ----------
+@cp_access-overlay:   fade(@olt_card, 50%);
+@cp_snapshots-hover:  fade(@olt_accent, 22%);
+
+// ---------- Support ----------
+@cp_support-bg:         @olt_cream;
+@cp_support-msg-fg:     @olt_navy;
+@cp_support-msg-bg:     #EFEDE6;
+@cp_support-header-bg:  @olt_hairline;
+
+// ---------- Toolbar (top of every pad/doc) ----------
+@cp_toolbar-bg:         @olt_card;
+@cp_toolbar-fg:         @olt_navy;
+@cp_toolbar-bottom-bg:  @olt_cream;
+@cp_toolbar-bottom-fg:  @olt_navy;
+@cp_toolbar-logo-bg:    @olt_navy;
+
+@cp_toolbar-fade1: fade(@olt_navy, 8%);
+@cp_toolbar-fade3: fade(@olt_navy, 24%);
+@cp_toolbar-warn:  @cp_buttons-red;
+
+@cp_history-line-bg: @olt_card;
+@cp_history-bg1:     @olt_hairline;
+@cp_history-bg2:     #B5B3AB;
+@cp_history-fg:      @cp_toolbar-fg;
+
+// ---------- Tokenfield ----------
+@cp_token-bg:        fade(@olt_accent, 18%);
+@cp_token-fg:        @olt_navy;
+@cp_token-bg-hover:  fade(@olt_accent, 28%);
+@cp_token-invalid:   @cryptpad_color_warn_red;
+
+// ---------- Usergrid ----------
+@cp_usergrid-fg:           @olt_navy;
+@cp_usergrid-selected-bg:  @olt_navy;
+@cp_usergrid-selected-fg:  @olt_cream;
+
+// ---------- Other ----------
+@cp_shadow-color: fade(@olt_navy_deep, 22%);
+
+// ---------- Apps ----------
+@cp_app-bg: @olt_card;
+@cp_app-fg: @olt_navy;
+
+// ---------- Accounts ----------
+@cp_accounts-basic:          @cryptpad_color_basic;
+@cp_accounts-pro:            @cryptpad_color_pro;
+@cp_accounts-power:          @cryptpad_color_power;
+@cp_accounts-active:         @cryptpad_color_light_green;
+@cp_accounts-inactive:       @cryptpad_color_light_red;
+@cp_accounts-mysubs-alert:   @olt_card;
+@cp_accounts-mysubs-bg:      @olt_cream;
+@cp_accounts-mysubs-fg:      @olt_navy;
+@cp_accounts-contact-hover:  fade(@olt_navy, 18%);
+@cp_accounts-tab-bg:         @olt_cream;
+@cp_accounts-tab-hover:      fade(@olt_accent, 18%);
+@cp_accounts-tab-border:     @olt_hairline;
+
+// ---------- Admin ----------
+@cp_admin-isadmin-bg:  fade(@olt_accent, 22%);
+@cp_admin-premium-bg:  fade(@cryptpad_color_red, 18%);
+@cp_admin-last-fg:     @olt_navy;
+@cp_admin-last-bg:     @olt_hairline;
+
+// ---------- Code app ----------
+@cp_preview-bg:   @olt_card;
+@cp_preview-fg:   @olt_navy;
+@cp_preview-link: @olt_accent_dark;
+
+// ---------- Debug ----------
+@cp_debug-hover:        fade(@olt_navy, 8%);
+@cp_debug-icon-hover:   @olt_hairline;
+
+// ---------- Mediatag ----------
+@cp_mediatag-text-bg: @olt_card;
+@cp_mediatag-text-fg: @olt_navy;
+
+// ---------- File ----------
+@cp_file-progress-bg: @olt_accent;
+@cp_file-progress-fg: @olt_navy;
+
+// ---------- Kanban ----------
+@cp_kanban-fg:           @olt_navy;
+@cp_kanban-item-bg:      @olt_card;
+@cp_kanban-link:         @olt_accent_dark;
+@cp_kanban-board-bg:     @olt_cream;
+@cp_kanban-conflict-bg:  #EFEDE6;
+@cp_kanban-tags-bg:      @olt_hairline;
+@cp_kanban-add-hover:    fade(@olt_accent, 18%);
+@cp_kanban-trash-bg:     @cryptpad_color_warn_red;
+@cp_kanban-color0:       @cryptpad_color_grey_400;
+@cp_kanban-colors:       @cp_palette;
+@cp_kanban-card-colors:  @cp_palette;
+
+// ---------- Notifications ----------
+@cp_notif-hover:         fade(@olt_accent, 18%);
+@cp_notif-header-bg:     @olt_cream;
+@cp_notif-header-fg:     @olt_navy;
+@cp_notif-table-border:  @olt_hairline;
+@cp_notif-bg:            @olt_card;
+@cp_notif-fg:            @olt_navy;
+
+// ---------- OnlyOffice overlay ----------
+@cp_oo-offline-overlay: fade(@olt_card, 50%);
+
+// ---------- Rich text / pad ----------
+@cp_pad-fg:           @olt_navy;
+@cp_pad-icon-filter:  none;
+@cp_pad-resize:       @olt_navy;
+
+// Comments
+@cp_comments-fg:     @olt_navy;
+@cp_comments-bg:     @olt_card;
+@cp_comments-header: @olt_navy_soft;
+@cp_comments-notif:  @cryptpad_color_red;
+
+// ---------- Poll ----------
+@cp_poll-th-bg:           fade(@olt_accent, 25%);
+@cp_poll-th-fg:           @olt_navy;
+@cp_poll-uncommitted-bg:  @olt_cream;
+@cp_poll-border-color:    @olt_hairline;
+@cp_poll-cell-fg:         @olt_navy;
+@cp_poll-unset:           @olt_hairline;
+@cp_poll-yes:             @cryptpad_color_light_green;
+@cp_poll-no:              @cryptpad_color_light_red;
+@cp_poll-maybe:           @cryptpad_color_light_yellow;
+@cp_poll-hint:            @olt_navy_soft;
+
+// ---------- Profile ----------
+@cp_profile-border: @olt_hairline;
+@cp_profile-hint:   @olt_navy_soft;
+
+// ---------- Slide ----------
+@cp_slide-fg:        @cp_app-fg;
+@cp_slide-css-error: fade(@cryptpad_color_red, 22%);
+
+// ---------- Teams ----------
+@cp_teams-card-bg:      @olt_cream;
+@cp_teams-leftside-bg:  @cp_sidebar-left-bg;
+@cp_teams-invite-bg:    fade(@olt_accent, 35%);
+@cp_teams-invite-fg:    @olt_navy;
+@cp_teams-roster-odd:   fade(@olt_navy, 8%);
+
+// ---------- Whiteboard ----------
+@cp_whiteboard-board-bg:    @olt_card;
+@cp_whiteboard-board-border: @olt_hairline;
+@cp_whiteboard-bg:          @cp_app-bg;
+@cp_whiteboard-fg:          @olt_navy;
+
+// ---------- Flatpickr (date picker) ----------
+@cp_flatpickr-bg:             @olt_card;
+@cp_flatpickr-highlight:      fade(@olt_accent, 22%);
+@cp_flatpickr-highlight-text: @olt_navy;
+
+// ---------- Calendar ----------
+@cp_calendar-border: @olt_hairline;
+@cp_calendar-now:    @olt_accent;
+@cp_calendar-now-fg: @olt_cream;
+
+// ---------- Forms (the form-builder app) ----------
+@cp_form-bg1:           @olt_card;
+@cp_form-bg2:           @olt_cream;
+@cp_form-border:        @olt_hairline;
+@cp_form-poll-color:    @olt_navy;
+@cp_form-poll-no:       fade(@cryptpad_color_light_red, 75%);
+@cp_form-poll-yes:      fade(@cryptpad_color_light_green, 75%);
+@cp_form-poll-maybe:    @olt_hairline;
+@cp_form-poll-yes-color: @cryptpad_color_green;
+@cp_form-invalid:       @cp_alerts-danger-text;
+@cp_form-palette:       @cp_palette;
+@cp_form-palette2:      @cp_palette-dark;

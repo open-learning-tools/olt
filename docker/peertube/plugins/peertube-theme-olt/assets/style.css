@@ -1,0 +1,657 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap");
+
+/*
+ * Open Learning Tools brand theme for PeerTube.
+ *
+ * Maps the OLT palette (cream + navy + turquoise) onto PeerTube's CSS
+ * custom-property theming surface. Targets PeerTube >= 5.x which uses
+ * --fg / --bg / --primary / --on-primary / --bg-secondary-* / --menu-*
+ * / --input-* / --header-* / --border-* variables.
+ *
+ * Brand tokens:
+ *   cream     oklch(0.985 0.006 230)  ~#F8F8F4
+ *   navy      oklch(0.32  0.09  255)  ~#1F2A55
+ *   navy-soft oklch(0.45  0.02  260)  ~#5C6478
+ *   accent    oklch(0.7   0.1   200)  ~#4FBED1  (turquoise)
+ *   hairline  oklch(0.86  0.01  80 )  ~#D8D5CC
+ *   card      #ffffff
+ *   radius    14px
+ *
+ * Type system:
+ *   sans:  Inter
+ *   accent: Instrument Serif italic (used by .olt-italic in the wrapper)
+ */
+
+:root,
+:root body {
+  /* ---- OLT tokens (also re-exported for our own selectors) ---- */
+  --olt-cream: oklch(0.985 0.006 230);
+  --olt-navy: oklch(0.32 0.09 255);
+  --olt-navy-soft: oklch(0.45 0.02 260);
+  --olt-navy-deep: oklch(0.21 0.045 255);
+  --olt-accent: oklch(0.7 0.1 200);
+  --olt-hairline: oklch(0.86 0.01 80);
+  --olt-card: #ffffff;
+  --olt-radius: 14px;
+
+  /* ---- PeerTube core surface ---- */
+  --is-dark: 0;
+
+  --bg: var(--olt-cream);
+  --fg: var(--olt-navy);
+
+  /* PeerTube generates --fg-50..500 gradients automatically from --fg,
+   * but we pin a few of the most-used ones so muted text resolves to
+   * the OLT navy-soft instead of a generic gray. */
+  --fg-500: var(--olt-navy);
+  --fg-450: var(--olt-navy);
+  --fg-400: oklch(0.38 0.06 258);
+  --fg-350: var(--olt-navy-soft);
+  --fg-300: var(--olt-navy-soft);
+  --fg-250: oklch(0.55 0.02 260);
+  --fg-200: oklch(0.62 0.02 260);
+  --fg-150: oklch(0.7 0.015 260);
+  --fg-100: oklch(0.78 0.01 260);
+  --fg-50: oklch(0.86 0.008 260);
+
+  /* Secondary surfaces (cards, panels, hover backgrounds). */
+  --bg-secondary-600: oklch(0.92 0.01 230);
+  --bg-secondary-550: oklch(0.94 0.008 230);
+  --bg-secondary-500: var(--olt-card);
+  --bg-secondary-450: var(--olt-card);
+  --bg-secondary-400: oklch(0.97 0.005 230);
+  --bg-secondary-350: oklch(0.965 0.006 230);
+  --bg-secondary-300: oklch(0.96 0.007 230);
+  --bg-secondary-250: oklch(0.95 0.008 230);
+  --bg-secondary-200: oklch(0.93 0.01 230);
+
+  /* ---- Primary brand colour (turquoise accent on navy text) ---- */
+  --primary: var(--olt-accent);
+  --on-primary: var(--olt-navy);
+
+  /* Pin the most-used primary gradient stops so buttons and links
+   * pick up the turquoise palette instead of PeerTube's default
+   * orange. PeerTube fills the remaining stops automatically. */
+  --primary-700: oklch(0.4 0.09 200);
+  --primary-600: oklch(0.5 0.1 200);
+  --primary-550: oklch(0.6 0.1 200);
+  --primary-500: var(--olt-accent);
+  --primary-450: oklch(0.74 0.09 200);
+  --primary-400: oklch(0.78 0.08 200);
+  --primary-350: oklch(0.82 0.07 200);
+  --primary-300: oklch(0.86 0.05 200);
+  --primary-250: oklch(0.9 0.04 200);
+  --primary-200: oklch(0.93 0.03 200);
+  --primary-150: oklch(0.95 0.02 200);
+  --primary-100: oklch(0.97 0.015 200);
+  --primary-50: oklch(0.985 0.008 200);
+  --on-primary-500: var(--olt-navy);
+  --on-primary-450: var(--olt-navy);
+  --on-primary-400: var(--olt-navy);
+  --on-primary-300: var(--olt-navy);
+
+  /* ---- Header (top bar) ---- */
+  --header-bg: oklch(1 0 0 / 0.85);
+  --header-bg-600: oklch(0.95 0.005 230);
+  --header-bg-550: oklch(0.96 0.005 230);
+  --header-bg-500: oklch(1 0 0 / 0.9);
+  --header-bg-450: oklch(1 0 0 / 0.85);
+  --header-bg-400: oklch(1 0 0 / 0.8);
+  --header-bg-350: oklch(0.99 0.004 230);
+  --header-bg-300: oklch(0.98 0.005 230);
+  --header-bg-250: oklch(0.97 0.006 230);
+  --header-bg-200: oklch(0.96 0.007 230);
+  --header-fg-500: var(--olt-navy);
+  --header-fg-450: var(--olt-navy);
+  --header-fg-400: var(--olt-navy);
+  --header-fg-350: var(--olt-navy-soft);
+  --header-fg-300: var(--olt-navy-soft);
+  --header-fg-250: oklch(0.55 0.02 260);
+  --header-fg-200: oklch(0.62 0.02 260);
+  --header-fg-150: oklch(0.7 0.015 260);
+  --header-fg-100: oklch(0.78 0.01 260);
+  --header-fg-50: oklch(0.86 0.008 260);
+
+  /* ---- Side menu (left navigation) ---- */
+  --menu-bg: var(--olt-card);
+  --menu-fg: var(--olt-navy);
+  --menu-bg-600: oklch(0.92 0.01 230);
+  --menu-bg-550: oklch(0.94 0.008 230);
+  --menu-bg-500: var(--olt-card);
+  --menu-bg-450: oklch(0.97 0.005 230);
+  --menu-bg-400: oklch(0.96 0.006 230);
+  --menu-bg-350: oklch(0.95 0.007 230);
+  --menu-bg-300: oklch(0.94 0.008 230);
+  --menu-bg-250: oklch(0.93 0.009 230);
+  --menu-bg-200: oklch(0.92 0.01 230);
+  --menu-fg-500: var(--olt-navy);
+  --menu-fg-450: var(--olt-navy);
+  --menu-fg-400: var(--olt-navy);
+  --menu-fg-350: var(--olt-navy-soft);
+  --menu-fg-300: var(--olt-navy-soft);
+  --menu-fg-250: oklch(0.55 0.02 260);
+  --menu-fg-200: oklch(0.62 0.02 260);
+  --menu-fg-150: oklch(0.7 0.015 260);
+  --menu-fg-100: oklch(0.78 0.01 260);
+  --menu-fg-50: oklch(0.86 0.008 260);
+  --menu-fg-600: var(--olt-navy);
+  --menu-border-radius: var(--olt-radius);
+
+  /* ---- Inputs ---- */
+  --input-bg: var(--olt-cream);
+  --input-fg: var(--olt-navy);
+  --input-bg-550: oklch(0.97 0.005 230);
+  --input-bg-600: oklch(0.95 0.007 230);
+  --input-bg-in-secondary: var(--olt-cream);
+  --input-bg-in-modal: var(--olt-cream);
+  --input-border-color: var(--olt-hairline);
+  --input-border-radius: 10px;
+  --input-placeholder-color: oklch(0.62 0.02 260);
+
+  /* ---- Borders ---- */
+  --border-primary: var(--olt-hairline);
+  --border-secondary: oklch(0.9 0.008 230);
+
+  /* ---- Alerts (info-toned, since OLT has no canonical danger hue) ---- */
+  --alert-primary-fg: var(--olt-navy);
+  --alert-primary-bg: oklch(0.95 0.04 200);
+  --alert-primary-border-color: oklch(0.82 0.07 200);
+
+  /* ---- Icons ---- */
+  --secondary-icon-color: var(--olt-navy-soft);
+  --active-icon-color: var(--olt-navy);
+  --active-icon-bg: oklch(0.92 0.06 200);
+
+  /* ---- Support / heart button ---- */
+  --support-btn-bg: oklch(0.96 0.02 200);
+  --support-btn-fg: var(--olt-navy);
+  --support-btn-heart-bg: var(--olt-accent);
+
+  /* ---- Player ---- */
+  --pt-player-fg: var(--olt-cream);
+  --pt-player-big-play-bg: oklch(0.32 0.09 255 / 0.85);
+  --pt-player-overlay-secondary-fg: var(--olt-cream);
+  --pt-player-overlay-secondary-bg: oklch(0.21 0.045 255 / 0.7);
+}
+
+/* ---------- Typography ---------- */
+
+html,
+body {
+  font-family:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif !important;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  background: var(--olt-cream) !important;
+  color: var(--olt-navy);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: -0.015em;
+  color: var(--olt-navy);
+}
+
+::selection {
+  background: var(--olt-accent);
+  color: var(--olt-navy);
+}
+
+/* ---------- Header / top bar ---------- */
+
+.header,
+#header,
+my-header,
+.top-menu,
+.peertube-header {
+  background: oklch(1 0 0 / 0.85) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--olt-hairline);
+  box-shadow: 0 14px 32px -28px oklch(0.21 0.045 255 / 0.35);
+}
+
+/* PeerTube logo wordmark in the top-left: re-tint to navy. */
+.header .logo,
+my-header .logo,
+.peertube-title,
+.instance-name {
+  color: var(--olt-navy) !important;
+  font-weight: 600;
+}
+
+/* The orange "+" upload FAB and other primary CTAs in the header. */
+.header .publish-button,
+my-header .publish-button,
+.publish-button,
+.upload-button {
+  background: var(--olt-navy) !important;
+  color: var(--olt-cream) !important;
+  border: 1px solid var(--olt-navy) !important;
+  border-radius: 9999px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.header .publish-button:hover,
+my-header .publish-button:hover,
+.publish-button:hover,
+.upload-button:hover {
+  background: oklch(0.28 0.05 255) !important;
+  transform: translateY(-1px);
+}
+
+/* ---------- Side menu ---------- */
+
+.menu-wrapper,
+.sub-menu,
+my-menu,
+.menu-block {
+  background: var(--olt-card) !important;
+  border-right: 1px solid var(--olt-hairline);
+}
+
+.menu-link,
+.menu-wrapper a,
+my-menu a {
+  color: var(--olt-navy);
+  border-radius: 10px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.menu-link:hover,
+.menu-wrapper a:hover,
+my-menu a:hover {
+  background: oklch(0.92 0.06 200) !important;
+  color: var(--olt-navy) !important;
+}
+
+.menu-link.active,
+.menu-wrapper a.active,
+my-menu a.active,
+.menu-link.router-link-active {
+  background: var(--olt-navy) !important;
+  color: var(--olt-cream) !important;
+  font-weight: 600;
+}
+
+/* ---------- Buttons ---------- */
+
+.peertube-button,
+.peertube-button-link,
+button.action-button,
+.action-button,
+.orange-button,
+.orange-button-link,
+my-button .peertube-button,
+.btn-primary {
+  background: var(--olt-navy) !important;
+  color: var(--olt-cream) !important;
+  border: 1px solid var(--olt-navy) !important;
+  border-radius: 9999px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.peertube-button:hover:not(:disabled),
+.peertube-button-link:hover:not(:disabled),
+button.action-button:hover:not(:disabled),
+.action-button:hover:not(:disabled),
+.orange-button:hover:not(:disabled),
+.orange-button-link:hover:not(:disabled),
+.btn-primary:hover:not(:disabled) {
+  background: oklch(0.28 0.05 255) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px -22px oklch(0.21 0.045 255 / 0.45);
+}
+
+.grey-button,
+.grey-button-link,
+.btn-secondary,
+.peertube-button.secondary,
+.peertube-button-link.secondary {
+  background: var(--olt-card) !important;
+  color: var(--olt-navy) !important;
+  border: 1px solid var(--olt-hairline) !important;
+  border-radius: 9999px !important;
+  font-weight: 600 !important;
+}
+
+.grey-button:hover,
+.grey-button-link:hover,
+.btn-secondary:hover,
+.peertube-button.secondary:hover {
+  border-color: var(--olt-navy) !important;
+  background: oklch(0.97 0.005 230) !important;
+}
+
+/* Tertiary / accent button (for "subscribe", "follow", emphasis CTAs). */
+.tertiary-button,
+.peertube-button.tertiary,
+.subscribe-button {
+  background: var(--olt-accent) !important;
+  color: var(--olt-navy) !important;
+  border: 1px solid var(--olt-accent) !important;
+  border-radius: 9999px !important;
+  font-weight: 600 !important;
+}
+
+.tertiary-button:hover,
+.peertube-button.tertiary:hover,
+.subscribe-button:hover {
+  background: oklch(0.78 0.08 200) !important;
+  border-color: oklch(0.78 0.08 200) !important;
+}
+
+/* ---------- Inputs ---------- */
+
+input.form-control,
+textarea.form-control,
+select.form-control,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="url"],
+textarea {
+  background: var(--olt-cream) !important;
+  color: var(--olt-navy) !important;
+  border: 1px solid var(--olt-hairline) !important;
+  border-radius: 10px !important;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+input.form-control:focus,
+textarea.form-control:focus,
+select.form-control:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="number"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+  border-color: var(--olt-navy) !important;
+  box-shadow: 0 0 0 3px oklch(0.32 0.09 255 / 0.14) !important;
+  outline: none !important;
+}
+
+::placeholder {
+  color: oklch(0.62 0.02 260) !important;
+}
+
+/* Search bar in the header. */
+.top-menu input[type="text"],
+.search-bar input,
+my-search-typeahead input {
+  border-radius: 9999px !important;
+  background: oklch(1 0 0 / 0.7) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ---------- Cards (videos, channels, playlists) ---------- */
+
+.video-miniature,
+.channel-miniature,
+.playlist-miniature,
+.video-row,
+my-video-miniature,
+my-channel-miniature {
+  background: var(--olt-card);
+  border: 1px solid var(--olt-hairline);
+  border-radius: var(--olt-radius);
+  padding: 12px;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.2s ease;
+}
+
+.video-miniature:hover,
+.channel-miniature:hover,
+.playlist-miniature:hover,
+my-video-miniature:hover,
+my-channel-miniature:hover {
+  transform: translateY(-2px);
+  border-color: var(--olt-navy);
+  box-shadow: 0 18px 40px -22px oklch(0.21 0.045 255 / 0.35);
+}
+
+.video-thumbnail,
+.video-miniature-thumbnail,
+my-video-thumbnail img,
+.channel-avatar,
+.playlist-thumbnail {
+  border-radius: 10px !important;
+  overflow: hidden;
+}
+
+.video-miniature-name,
+.video-info-name,
+.channel-info-name,
+my-actor-avatar + * h1,
+my-actor-avatar + * h2,
+my-actor-avatar + * h3 {
+  color: var(--olt-navy) !important;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.video-miniature-created-at-views,
+.video-miniature-information,
+.channel-info-followers,
+.video-miniature-channel,
+.video-miniature-account {
+  color: var(--olt-navy-soft) !important;
+}
+
+/* ---------- Tags / pills ---------- */
+
+.badge,
+.tag,
+.video-tag,
+.label {
+  background: oklch(0.96 0.02 200) !important;
+  color: var(--olt-navy) !important;
+  border: 1px solid var(--olt-hairline) !important;
+  border-radius: 9999px !important;
+  font-weight: 500;
+}
+
+/* ---------- Links ---------- */
+
+a {
+  color: var(--olt-navy);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: oklch(0.28 0.05 255);
+}
+
+a.text-primary,
+.link-primary,
+a.tertiary-link {
+  color: oklch(0.5 0.1 200) !important;
+}
+
+a.text-primary:hover,
+.link-primary:hover,
+a.tertiary-link:hover {
+  color: oklch(0.4 0.09 200) !important;
+}
+
+/* ---------- Hairline rules / dividers ---------- */
+
+hr,
+.divider,
+.separator {
+  border-color: var(--olt-hairline) !important;
+  background: var(--olt-hairline);
+}
+
+/* ---------- Login page ---------- */
+
+.login-form-container,
+.login,
+.signup-step {
+  background: var(--olt-card);
+  border: 1px solid var(--olt-hairline);
+  border-radius: var(--olt-radius);
+  box-shadow: 0 20px 60px -36px oklch(0.21 0.045 255 / 0.3);
+  padding: clamp(24px, 4vw, 36px);
+}
+
+.login-form-container h1,
+.login h1,
+.login h2 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+/* The accent italic flourish, used by the wrapper in headlines.
+ * Provides a hook the OIDC flow page or any custom HTML can use. */
+.olt-italic,
+em.olt-accent {
+  font-family: "Instrument Serif", "Times New Roman", serif !important;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--olt-accent);
+}
+
+/* ---------- Modal / dialog ---------- */
+
+.modal-content,
+.modal-body,
+.cdk-overlay-pane > * {
+  background: var(--olt-card) !important;
+  color: var(--olt-navy) !important;
+  border: 1px solid var(--olt-hairline);
+  border-radius: var(--olt-radius);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--olt-hairline) !important;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--olt-hairline) !important;
+}
+
+/* ---------- Tables ---------- */
+
+table,
+.p-datatable,
+.p-datatable-table {
+  background: var(--olt-card) !important;
+  color: var(--olt-navy) !important;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--olt-radius);
+  overflow: hidden;
+}
+
+th,
+.p-datatable-thead > tr > th {
+  background: oklch(0.97 0.005 230) !important;
+  color: var(--olt-navy) !important;
+  border-bottom: 1px solid var(--olt-hairline) !important;
+  font-weight: 600;
+}
+
+td,
+.p-datatable-tbody > tr > td {
+  border-bottom: 1px solid var(--olt-hairline) !important;
+  color: var(--olt-navy);
+}
+
+/* ---------- Tabs ---------- */
+
+.nav-tabs,
+.nav-pills {
+  border-bottom: 1px solid var(--olt-hairline) !important;
+}
+
+.nav-tabs .nav-link,
+.nav-pills .nav-link {
+  color: var(--olt-navy-soft) !important;
+  border-radius: 9999px !important;
+  font-weight: 600;
+}
+
+.nav-tabs .nav-link.active,
+.nav-pills .nav-link.active {
+  color: var(--olt-navy) !important;
+  background: oklch(0.92 0.06 200) !important;
+  border-color: transparent !important;
+}
+
+/* ---------- Scrollbar ---------- */
+
+* {
+  scrollbar-color: var(--olt-hairline) transparent;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--olt-hairline);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--olt-navy-soft);
+}
+
+/* ---------- Player chrome ---------- */
+
+.video-js .vjs-big-play-button {
+  background: oklch(0.32 0.09 255 / 0.85) !important;
+  border: 0 !important;
+  border-radius: 9999px !important;
+  color: var(--olt-cream) !important;
+}
+
+.video-js .vjs-play-progress,
+.video-js .vjs-volume-level {
+  background: var(--olt-accent) !important;
+}
+
+.video-js .vjs-control-bar {
+  background: oklch(0.21 0.045 255 / 0.7) !important;
+  color: var(--olt-cream) !important;
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .video-miniature,
+  .channel-miniature,
+  .playlist-miniature {
+    transition: none !important;
+  }
+}

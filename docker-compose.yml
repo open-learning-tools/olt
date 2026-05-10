@@ -357,6 +357,8 @@ services:
       - ./docker/code-server/config.yaml:/config/.config/code-server/config.yaml:ro
       - ./docker/code-server/workspace/olt.code-workspace:/config/workspace/olt.code-workspace:ro
       - ./docker/code-server/hooks/30-olt-xapi-startup.sh:/custom-cont-init.d/30-olt-xapi-startup.sh:ro
+      - ./docker/code-server/hooks/20-olt-branding.sh:/custom-cont-init.d/20-olt-branding.sh:ro
+      - ./docker/code-server/user-settings/settings.json:/olt/code-server/user-settings/settings.json:ro
       - ./:/workspace/olt
     expose:
       - "8443"
@@ -373,6 +375,7 @@ services:
       - -lc
       - |
         node -e 'const fs = require("fs"); const file = "api/strategies/openidStrategy.js"; const text = fs.readFileSync(file, "utf8"); fs.writeFileSync(file, text.replace("[client.customFetch]: customFetch,\n      },", "[client.customFetch]: customFetch,\n        execute: [client.allowInsecureRequests],\n      },"));'
+        node -e 'const fs = require("fs"); const file = "client/dist/index.html"; if (fs.existsSync(file)) { const text = fs.readFileSync(file, "utf8"); const tag = `<link rel="stylesheet" href="/assets/olt/olt-theme.css">`; if (!text.includes(tag)) { fs.writeFileSync(file, text.replace("</head>", tag + "</head>")); } }'
         exec npm run backend
     depends_on:
       mongodb:
@@ -404,10 +407,15 @@ services:
       OPENID_CALLBACK_URL: "${LIBRECHAT_OIDC_CALLBACK_PATH:-/oauth/openid/callback}"
       OPENID_SCOPE: "${LIBRECHAT_OIDC_SCOPE:-openid profile email}"
       OLT_XAPI_SOURCE_NAME: "Open Learning Tools Chat"
+      APP_TITLE: "OLT AI Chat"
+      CUSTOM_FOOTER: "OLT AI Chat - part of [Open Learning Tools](http://olt.localhost). Every learning moment, measured and understood."
+      HELP_AND_FAQ_URL: "http://olt.localhost"
       <<: *olt_xapi_env
     volumes:
       - ./docker/librechat/librechat.yaml:/app/librechat.yaml:ro
       - ./docker/librechat/xapi-forwarder.cjs:/app/olt-xapi-forwarder.cjs:ro
+      - ./docker/librechat/olt-logo.png:/app/client/public/assets/olt/olt-logo.png:ro
+      - ./docker/librechat/olt-theme.css:/app/client/public/assets/olt/olt-theme.css:ro
       - librechat_images:/app/client/public/images
       - librechat_uploads:/app/uploads
       - librechat_logs:/app/api/logs

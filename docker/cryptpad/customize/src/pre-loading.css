@@ -1,0 +1,167 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap");
+
+/*
+ * SPDX-FileCopyrightText: 2026 Open Learning Tools
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ *
+ * OLT-branded pre-loading screen. This CSS is injected by every CryptPad
+ * page before the JS bundle finishes downloading, so it's the very first
+ * paint a user sees. Mirrors the cream + navy + turquoise look of the OLT
+ * wrapper landing page (web/src/App.css).
+ *
+ * Brand tokens used (closest sRGB to the canonical oklch values):
+ *   cream      #F8F8F4 (oklch(0.985 0.006 230))
+ *   navy       #1F2A55 (oklch(0.32  0.09  255))
+ *   navy soft  #5C6478 (oklch(0.45  0.02  260))
+ *   accent     #4FBED1 (oklch(0.7   0.10  200))
+ *   hairline   #D8D5CC (oklch(0.86  0.01  80))
+ */
+
+.cp-app-noscroll body {
+    background: transparent;
+}
+.cp-app-noscroll #placeholder {
+    z-index: 9999999; /* loading screen -1 */
+    background-color: transparent;
+}
+
+#placeholder {
+    visibility: visible;
+    position: fixed;
+    z-index: -10;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* Cream base with two soft turquoise/navy radial blooms borrowed from
+       the OLT wrapper hero. */
+    background-color: #F8F8F4;
+    background-image:
+        radial-gradient(ellipse 460px 460px at -120px -120px,
+            rgba(79, 190, 209, 0.32), transparent 70%),
+        radial-gradient(ellipse 520px 520px at calc(100% + 180px) 80px,
+            rgba(80, 110, 175, 0.22), transparent 70%);
+    color: #1F2A55;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    opacity: 1;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+    font-feature-settings: 'ss01', 'cv11';
+    -webkit-font-smoothing: antialiased;
+}
+html:not(.cp-app-noscroll) #placeholder.dark-theme {
+    background-color: #15224A; /* OLT navy-deep */
+    background-image:
+        radial-gradient(ellipse 460px 460px at -120px -120px,
+            rgba(79, 190, 209, 0.18), transparent 70%),
+        radial-gradient(ellipse 520px 520px at calc(100% + 180px) 80px,
+            rgba(31, 42, 85, 0.7), transparent 70%);
+}
+#placeholder.dark-theme {
+    color: #F8F8F4;
+}
+
+#placeholder .placeholder-logo-container {
+    height: 300px;
+    width: 300px;
+    margin-top: 50px;
+    flex: 0 1 auto;
+    min-height: 0;
+    text-align: center;
+    opacity: 0;
+    animation: fadein 5s ease 2s forwards;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#placeholder .placeholder-logo-container img {
+    max-width: 100%;
+    max-height: 100%;
+}
+#placeholder .placeholder-message-container {
+    width: 720px;
+    max-width: 90vw;
+    height: 236px;
+    max-height: calc(100vh - 20px);
+    margin: 32px 50px 50px;
+    flex-shrink: 0;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    opacity: 0;
+    animation: fadein 5s ease 2s forwards;
+    color: #5C6478;
+}
+#placeholder .placeholder-message-container p {
+    margin-top: 0;
+    max-width: 560px;
+    text-align: center;
+    line-height: 1.6;
+}
+#placeholder.dark-theme .placeholder-message-container {
+    color: rgba(248, 248, 244, 0.78);
+}
+#placeholder .placeholder-logo {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 90vw;
+    max-height: max(40vh, 250px);
+    width: auto;
+    height: auto;
+    margin-bottom: 1.25em;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@media screen and (max-width: 500px) {
+    #placeholder {
+        font-size: 16px !important;
+    }
+    #placeholder .placeholder-message-container {
+        height: 206px;
+    }
+}
+@media screen and (max-height: 700px) {
+    #placeholder {
+        font-size: 16px !important;
+    }
+    #placeholder .placeholder-message-container {
+        height: 206px;
+    }
+}
+@media screen and (max-height: 500px) {
+    #placeholder .placeholder-logo-container {
+        display: none;
+    }
+}
+
+/* Honor users who prefer reduced motion (matches the wrapper site policy). */
+@media (prefers-reduced-motion: reduce) {
+    #placeholder .placeholder-logo-container,
+    #placeholder .placeholder-message-container {
+        animation: none !important;
+        opacity: 1 !important;
+    }
+}
+
+:is(div, noscript) > p.noscript {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    z-index: 999;
+    padding: 14px 18px;
+    font-size: 18px;
+    line-height: 1.4;
+    margin: 16px auto !important;
+    max-width: 720px;
+
+    background-color: #1F2A55;
+    color: #F8F8F4;
+    border: 1px solid #15224A;
+    border-radius: 14px;
+}

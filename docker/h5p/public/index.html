@@ -3,29 +3,62 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Quizzes | OLT Local</title>
-    <link rel="stylesheet" href="/styles.css">
+    <title>Quizzes | Open Learning Tools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+    <link rel="stylesheet" href="/olt-theme.css">
+    <link rel="icon" href="/olt-logo.png" type="image/png">
     <script src="/assets/h5p/main.bundle.js" charset="UTF-8" defer></script>
     <script src="/app.js" defer></script>
   </head>
   <body>
-    <main class="shell">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow">Open Learning Tools</p>
-          <h1>Quizzes</h1>
+    <main class="olt-shell">
+      <div class="olt-bg" aria-hidden="true">
+        <div class="olt-bg-grid"></div>
+        <div class="olt-blobs">
+          <span class="olt-blob olt-blob-a"></span>
+          <span class="olt-blob olt-blob-b"></span>
         </div>
-        <a class="health-link" href="/healthz">Health</a>
+      </div>
+
+      <header class="olt-header olt-container">
+        <a class="olt-logo" href="/">
+          <img
+            src="/olt-logo.png"
+            alt="Open Learning Tools"
+            class="olt-logo-img">
+        </a>
+        <a class="olt-health-link" href="/healthz">Health</a>
       </header>
 
-      <section class="toolbar" aria-label="Quiz content selector">
-        <label for="content-select">Content</label>
-        <select id="content-select">
-          <option value="">Loading...</option>
-        </select>
+      <section class="olt-hero olt-container">
+        <p class="olt-eyebrow">Open Learning Tools</p>
+        <h1 class="olt-display olt-hero-title">
+          Interactive <span class="olt-italic">quizzes</span>.
+        </h1>
+        <p class="olt-lede">
+          Pick a quiz from your local content library. Activity flows into the
+          shared learning record automatically.
+        </p>
       </section>
 
-      <section id="empty-state" class="empty-state" hidden>
+      <section class="olt-section olt-container" aria-label="Quiz content selector">
+        <div class="olt-section-head">
+          <p class="olt-eyebrow">Choose a quiz</p>
+          <span class="olt-section-rule" aria-hidden="true"></span>
+        </div>
+        <div class="olt-toolbar">
+          <label for="content-select">Content</label>
+          <select id="content-select" class="olt-select">
+            <option value="">Loading...</option>
+          </select>
+        </div>
+      </section>
+
+      <section id="empty-state" class="olt-empty olt-container" hidden>
         <h2>No local quiz content found</h2>
         <p>
           Add extracted content packages under <code>docker/h5p/content/&lt;name&gt;</code>.
@@ -34,9 +67,13 @@
         </p>
       </section>
 
-      <section id="player-region" class="player-region" aria-live="polite">
+      <section id="player-region" class="olt-player olt-container" aria-live="polite">
         <div id="h5p-container"></div>
       </section>
+
+      <footer class="olt-footer olt-container">
+        <p>Every learning moment, measured and understood.</p>
+      </footer>
     </main>
   </body>
 </html>

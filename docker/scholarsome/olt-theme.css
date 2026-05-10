@@ -1,0 +1,831 @@
+/*
+ * OLT theme overrides for Scholarsome.
+ *
+ * Scholarsome ships Bootstrap 5 plus its own component styles. We override
+ * the public Bootstrap CSS custom properties and then layer specific
+ * selectors for the visible chrome (navbar, buttons, cards, modals, study
+ * mode) so the app reads as part of the cream + navy + turquoise OLT brand.
+ *
+ * Tokens mirror /web/src/App.css. Hex fallbacks are provided so the theme
+ * still works in browsers that don't fully understand oklch() in custom
+ * properties used by Bootstrap component styles.
+ */
+
+:root {
+  --olt-cream: #f8f8f4;
+  --olt-cream-oklch: oklch(0.985 0.006 230);
+  --olt-navy: #1f2a55;
+  --olt-navy-oklch: oklch(0.32 0.09 255);
+  --olt-navy-soft: #5c6478;
+  --olt-navy-deep: #14193a;
+  --olt-accent: #4fbed1;
+  --olt-accent-oklch: oklch(0.7 0.1 200);
+  --olt-accent-strong: #2fa1b6;
+  --olt-hairline: #d8d5cc;
+  --olt-card: #ffffff;
+  --olt-radius: 14px;
+  --olt-radius-sm: 10px;
+  --olt-radius-pill: 9999px;
+  --olt-shadow-card: 0 18px 40px -22px rgba(20, 25, 58, 0.18);
+  --olt-shadow-soft: 0 14px 32px -28px rgba(20, 25, 58, 0.25);
+  --olt-font-sans:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --olt-font-serif: "Instrument Serif", "Times New Roman", serif;
+
+  /* Bootstrap 5 public custom properties. */
+  --bs-body-bg: var(--olt-cream);
+  --bs-body-color: var(--olt-navy);
+  --bs-body-font-family: var(--olt-font-sans);
+  --bs-body-font-weight: 400;
+  --bs-emphasis-color: var(--olt-navy);
+  --bs-secondary-color: var(--olt-navy-soft);
+  --bs-tertiary-color: var(--olt-navy-soft);
+  --bs-secondary-bg: #efece4;
+  --bs-tertiary-bg: #f3f1ea;
+  --bs-border-color: var(--olt-hairline);
+  --bs-border-color-translucent: rgba(20, 25, 58, 0.12);
+  --bs-border-radius: var(--olt-radius);
+  --bs-border-radius-sm: var(--olt-radius-sm);
+  --bs-border-radius-lg: 18px;
+  --bs-border-radius-pill: var(--olt-radius-pill);
+  --bs-link-color: var(--olt-navy);
+  --bs-link-hover-color: var(--olt-accent-strong);
+  --bs-heading-color: var(--olt-navy);
+  --bs-primary: var(--olt-navy);
+  --bs-primary-rgb: 31, 42, 85;
+  --bs-primary-text-emphasis: var(--olt-navy);
+  --bs-primary-bg-subtle: #e6e9f2;
+  --bs-primary-border-subtle: #c5cbe0;
+  --bs-secondary: var(--olt-navy-soft);
+  --bs-secondary-rgb: 92, 100, 120;
+  --bs-success-rgb: 76, 158, 122;
+  --bs-info: var(--olt-accent);
+  --bs-info-rgb: 79, 190, 209;
+  --bs-warning-rgb: 217, 154, 70;
+  --bs-danger-rgb: 200, 80, 70;
+  --bs-light: var(--olt-cream);
+  --bs-light-rgb: 248, 248, 244;
+  --bs-dark: var(--olt-navy);
+  --bs-dark-rgb: 31, 42, 85;
+  --bs-link-decoration: none;
+  --bs-form-control-bg: #ffffff;
+  --bs-form-control-color: var(--olt-navy);
+  --bs-card-bg: var(--olt-card);
+  --bs-card-border-color: var(--olt-hairline);
+  --bs-card-cap-bg: #f3f1ea;
+  --bs-modal-bg: var(--olt-card);
+  --bs-modal-border-color: var(--olt-hairline);
+  --bs-dropdown-bg: var(--olt-card);
+  --bs-dropdown-border-color: var(--olt-hairline);
+  --bs-dropdown-link-color: var(--olt-navy);
+  --bs-dropdown-link-hover-bg: #f3f1ea;
+  --bs-dropdown-link-hover-color: var(--olt-navy);
+  --bs-dropdown-link-active-bg: var(--olt-navy);
+  --bs-dropdown-link-active-color: var(--olt-cream);
+  --bs-nav-link-color: var(--olt-navy-soft);
+  --bs-nav-link-hover-color: var(--olt-navy);
+  --bs-navbar-color: var(--olt-navy-soft);
+  --bs-navbar-hover-color: var(--olt-navy);
+  --bs-navbar-active-color: var(--olt-navy);
+  --bs-navbar-brand-color: var(--olt-navy);
+  --bs-navbar-brand-hover-color: var(--olt-navy);
+  --bs-navbar-toggler-border-color: var(--olt-hairline);
+}
+
+@supports (color: oklch(0.985 0.006 230)) {
+  :root {
+    --olt-cream: oklch(0.985 0.006 230);
+    --olt-navy: oklch(0.32 0.09 255);
+    --olt-navy-soft: oklch(0.45 0.02 260);
+    --olt-navy-deep: oklch(0.21 0.045 255);
+    --olt-accent: oklch(0.7 0.1 200);
+    --olt-accent-strong: oklch(0.6 0.12 200);
+    --olt-hairline: oklch(0.86 0.01 80);
+  }
+}
+
+/* ---------- Base typography & background ---------- */
+
+html,
+body {
+  background-color: var(--olt-cream) !important;
+  color: var(--olt-navy) !important;
+  font-family: var(--olt-font-sans) !important;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "cv11";
+}
+
+body {
+  background-image:
+    radial-gradient(
+      ellipse 70% 50% at 12% -10%,
+      rgba(79, 190, 209, 0.18),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 95% 8%,
+      rgba(31, 42, 85, 0.10),
+      transparent 70%
+    );
+  background-attachment: fixed;
+}
+
+::selection {
+  background: var(--olt-accent);
+  color: var(--olt-navy);
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  color: var(--olt-navy) !important;
+  font-family: var(--olt-font-sans);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+a {
+  color: var(--olt-navy);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--olt-accent-strong);
+}
+
+/* ---------- Navbar ---------- */
+
+.navbar,
+nav.navbar,
+.navbar.navbar-expand,
+.navbar.navbar-expand-lg,
+.navbar.navbar-expand-md {
+  background: rgba(255, 255, 255, 0.86) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--olt-hairline) !important;
+  box-shadow: var(--olt-shadow-soft);
+  padding-block: 12px;
+}
+
+.navbar-dark,
+.navbar.bg-dark,
+.navbar.bg-primary {
+  background: var(--olt-navy) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.navbar-dark .navbar-brand,
+.navbar.bg-dark .navbar-brand,
+.navbar.bg-primary .navbar-brand,
+.navbar-dark .nav-link,
+.navbar.bg-dark .nav-link,
+.navbar.bg-primary .nav-link {
+  color: var(--olt-cream) !important;
+}
+
+.navbar-brand {
+  color: var(--olt-navy) !important;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* If Scholarsome renders its logo as an <img>, fade it slightly so the
+ * OLT wordmark doesn't clash. We can't reliably swap it without DOM
+ * manipulation, but we tint it toward navy. */
+.navbar-brand img,
+.navbar .navbar-brand img {
+  filter:
+    grayscale(1) brightness(0.55)
+    drop-shadow(0 0 0 var(--olt-navy));
+  max-height: 32px;
+  width: auto;
+}
+
+.nav-link {
+  color: var(--olt-navy-soft) !important;
+  font-weight: 500;
+  border-radius: var(--olt-radius-pill);
+  padding: 6px 14px !important;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  color: var(--olt-navy) !important;
+  background: rgba(31, 42, 85, 0.06);
+}
+
+.nav-link.active,
+.nav-link[aria-current="page"] {
+  color: var(--olt-navy) !important;
+  background: rgba(79, 190, 209, 0.18);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  border-radius: var(--olt-radius-pill);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  padding: 0.5rem 1.1rem;
+  border-width: 1px;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-primary,
+.btn.btn-primary {
+  background-color: var(--olt-navy) !important;
+  border-color: var(--olt-navy) !important;
+  color: var(--olt-cream) !important;
+}
+
+.btn-primary:hover:not(:disabled),
+.btn-primary:focus:not(:disabled) {
+  background-color: var(--olt-navy-deep) !important;
+  border-color: var(--olt-navy-deep) !important;
+  color: var(--olt-cream) !important;
+  box-shadow: 0 10px 24px -16px rgba(20, 25, 58, 0.55);
+}
+
+.btn-secondary,
+.btn.btn-secondary {
+  background-color: transparent !important;
+  border-color: var(--olt-hairline) !important;
+  color: var(--olt-navy) !important;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: rgba(31, 42, 85, 0.06) !important;
+  border-color: var(--olt-navy) !important;
+  color: var(--olt-navy) !important;
+}
+
+.btn-success {
+  background-color: var(--olt-accent-strong) !important;
+  border-color: var(--olt-accent-strong) !important;
+  color: var(--olt-cream) !important;
+}
+
+.btn-info {
+  background-color: var(--olt-accent) !important;
+  border-color: var(--olt-accent) !important;
+  color: var(--olt-navy) !important;
+}
+
+.btn-light,
+.btn-outline-light {
+  background-color: var(--olt-cream) !important;
+  border-color: var(--olt-hairline) !important;
+  color: var(--olt-navy) !important;
+}
+
+.btn-dark {
+  background-color: var(--olt-navy) !important;
+  border-color: var(--olt-navy) !important;
+  color: var(--olt-cream) !important;
+}
+
+.btn-outline-primary {
+  background-color: transparent !important;
+  border-color: var(--olt-navy) !important;
+  color: var(--olt-navy) !important;
+}
+
+.btn-outline-primary:hover:not(:disabled) {
+  background-color: var(--olt-navy) !important;
+  color: var(--olt-cream) !important;
+}
+
+.btn-outline-secondary {
+  background-color: transparent !important;
+  border-color: var(--olt-hairline) !important;
+  color: var(--olt-navy-soft) !important;
+}
+
+.btn-outline-secondary:hover:not(:disabled) {
+  background-color: rgba(31, 42, 85, 0.06) !important;
+  color: var(--olt-navy) !important;
+  border-color: var(--olt-navy) !important;
+}
+
+.btn-link {
+  color: var(--olt-navy) !important;
+  text-decoration: none;
+}
+
+.btn-link:hover {
+  color: var(--olt-accent-strong) !important;
+}
+
+.btn-danger {
+  background-color: #c45044 !important;
+  border-color: #c45044 !important;
+  color: #ffffff !important;
+}
+
+/* ---------- Cards & containers ---------- */
+
+.card {
+  background-color: var(--olt-card) !important;
+  border: 1px solid var(--olt-hairline) !important;
+  border-radius: var(--olt-radius) !important;
+  box-shadow: var(--olt-shadow-card);
+  color: var(--olt-navy);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    border-color 0.2s ease;
+}
+
+a.card:hover,
+.card.card-hover:hover,
+.card[role="button"]:hover {
+  transform: translateY(-2px);
+  border-color: var(--olt-navy) !important;
+  box-shadow: 0 22px 48px -22px rgba(20, 25, 58, 0.32);
+}
+
+.card-header {
+  background-color: #f3f1ea !important;
+  border-bottom: 1px solid var(--olt-hairline) !important;
+  color: var(--olt-navy) !important;
+  font-weight: 600;
+}
+
+.card-footer {
+  background-color: #f3f1ea !important;
+  border-top: 1px solid var(--olt-hairline) !important;
+}
+
+.card-title,
+.card .card-title {
+  color: var(--olt-navy) !important;
+  font-weight: 600;
+}
+
+.card-subtitle,
+.card .card-subtitle {
+  color: var(--olt-navy-soft) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.card-text {
+  color: var(--olt-navy-soft) !important;
+}
+
+/* ---------- Forms ---------- */
+
+.form-control,
+.form-select,
+input.form-control,
+textarea.form-control {
+  background-color: #ffffff !important;
+  border: 1px solid var(--olt-hairline) !important;
+  border-radius: var(--olt-radius-sm) !important;
+  color: var(--olt-navy) !important;
+  min-height: 42px;
+  padding: 0.55rem 0.85rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--olt-navy) !important;
+  box-shadow: 0 0 0 3px rgba(31, 42, 85, 0.14) !important;
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: var(--olt-navy-soft);
+  opacity: 0.7;
+}
+
+.form-label {
+  color: var(--olt-navy);
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+}
+
+.form-text,
+.form-check-label {
+  color: var(--olt-navy-soft);
+}
+
+.form-check-input {
+  border-color: var(--olt-hairline);
+}
+
+.form-check-input:checked {
+  background-color: var(--olt-navy);
+  border-color: var(--olt-navy);
+}
+
+/* ---------- Modals ---------- */
+
+.modal-content {
+  background-color: var(--olt-card) !important;
+  border: 1px solid var(--olt-hairline) !important;
+  border-radius: var(--olt-radius) !important;
+  box-shadow: 0 30px 80px -30px rgba(20, 25, 58, 0.45);
+  color: var(--olt-navy);
+}
+
+.modal-header {
+  background-color: #f3f1ea !important;
+  border-bottom: 1px solid var(--olt-hairline) !important;
+  border-top-left-radius: var(--olt-radius);
+  border-top-right-radius: var(--olt-radius);
+}
+
+.modal-title {
+  color: var(--olt-navy) !important;
+  font-weight: 600;
+}
+
+.modal-footer {
+  background-color: #f3f1ea !important;
+  border-top: 1px solid var(--olt-hairline) !important;
+  border-bottom-left-radius: var(--olt-radius);
+  border-bottom-right-radius: var(--olt-radius);
+}
+
+.modal-backdrop.show {
+  background-color: rgba(20, 25, 58, 0.55);
+  opacity: 1;
+}
+
+/* ---------- Dropdowns ---------- */
+
+.dropdown-menu {
+  background-color: var(--olt-card) !important;
+  border: 1px solid var(--olt-hairline) !important;
+  border-radius: var(--olt-radius) !important;
+  box-shadow: var(--olt-shadow-card);
+  padding: 6px;
+}
+
+.dropdown-item {
+  border-radius: var(--olt-radius-sm);
+  color: var(--olt-navy) !important;
+  padding: 8px 12px;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: rgba(31, 42, 85, 0.06) !important;
+  color: var(--olt-navy) !important;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: var(--olt-navy) !important;
+  color: var(--olt-cream) !important;
+}
+
+/* ---------- Alerts & toasts ---------- */
+
+.alert {
+  border-radius: var(--olt-radius);
+  border: 1px solid var(--olt-hairline);
+  padding: 0.85rem 1rem;
+}
+
+.alert-primary {
+  background-color: #e6e9f2;
+  border-color: #c5cbe0;
+  color: var(--olt-navy);
+}
+
+.alert-info {
+  background-color: rgba(79, 190, 209, 0.16);
+  border-color: rgba(79, 190, 209, 0.45);
+  color: var(--olt-navy);
+}
+
+.alert-success {
+  background-color: rgba(76, 158, 122, 0.14);
+  border-color: rgba(76, 158, 122, 0.4);
+  color: #1a4a37;
+}
+
+.alert-warning {
+  background-color: rgba(217, 154, 70, 0.16);
+  border-color: rgba(217, 154, 70, 0.4);
+  color: #6b4413;
+}
+
+.alert-danger {
+  background-color: rgba(200, 80, 70, 0.14);
+  border-color: rgba(200, 80, 70, 0.4);
+  color: #6b1f18;
+}
+
+.toast {
+  background-color: var(--olt-card);
+  border: 1px solid var(--olt-hairline);
+  border-radius: var(--olt-radius);
+  box-shadow: var(--olt-shadow-card);
+}
+
+/* ---------- Badges & pills ---------- */
+
+.badge {
+  border-radius: var(--olt-radius-pill);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0.35em 0.7em;
+}
+
+.badge.bg-primary,
+.badge.text-bg-primary {
+  background-color: var(--olt-navy) !important;
+  color: var(--olt-cream) !important;
+}
+
+.badge.bg-secondary,
+.badge.text-bg-secondary {
+  background-color: rgba(31, 42, 85, 0.08) !important;
+  color: var(--olt-navy) !important;
+}
+
+.badge.bg-info,
+.badge.text-bg-info {
+  background-color: var(--olt-accent) !important;
+  color: var(--olt-navy) !important;
+}
+
+.badge.bg-success,
+.badge.text-bg-success {
+  background-color: rgba(76, 158, 122, 0.18) !important;
+  color: #1a4a37 !important;
+}
+
+/* ---------- Tables ---------- */
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--olt-navy);
+  --bs-table-border-color: var(--olt-hairline);
+  --bs-table-striped-bg: rgba(31, 42, 85, 0.03);
+  --bs-table-hover-bg: rgba(79, 190, 209, 0.10);
+  color: var(--olt-navy);
+}
+
+.table thead th {
+  color: var(--olt-navy-soft) !important;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--olt-hairline) !important;
+  background: transparent !important;
+}
+
+/* ---------- Pagination ---------- */
+
+.page-link {
+  color: var(--olt-navy);
+  border-color: var(--olt-hairline);
+}
+
+.page-link:hover {
+  background-color: rgba(31, 42, 85, 0.06);
+  color: var(--olt-navy);
+  border-color: var(--olt-navy);
+}
+
+.page-item.active .page-link {
+  background-color: var(--olt-navy);
+  border-color: var(--olt-navy);
+  color: var(--olt-cream);
+}
+
+/* ---------- Progress / spinner ---------- */
+
+.progress {
+  background-color: rgba(31, 42, 85, 0.08);
+  border-radius: var(--olt-radius-pill);
+}
+
+.progress-bar {
+  background-color: var(--olt-accent);
+}
+
+.spinner-border,
+.spinner-grow {
+  color: var(--olt-navy);
+}
+
+/* ---------- Background utility overrides ---------- */
+
+.bg-primary {
+  background-color: var(--olt-navy) !important;
+  color: var(--olt-cream) !important;
+}
+
+.bg-secondary {
+  background-color: var(--olt-navy-soft) !important;
+  color: var(--olt-cream) !important;
+}
+
+.bg-info {
+  background-color: var(--olt-accent) !important;
+  color: var(--olt-navy) !important;
+}
+
+.bg-light {
+  background-color: var(--olt-cream) !important;
+  color: var(--olt-navy) !important;
+}
+
+.bg-dark {
+  background-color: var(--olt-navy) !important;
+  color: var(--olt-cream) !important;
+}
+
+.bg-body,
+.bg-body-tertiary {
+  background-color: var(--olt-cream) !important;
+}
+
+.text-primary {
+  color: var(--olt-navy) !important;
+}
+
+.text-secondary {
+  color: var(--olt-navy-soft) !important;
+}
+
+.text-info {
+  color: var(--olt-accent-strong) !important;
+}
+
+.text-muted {
+  color: var(--olt-navy-soft) !important;
+}
+
+.border {
+  border-color: var(--olt-hairline) !important;
+}
+
+.border-primary {
+  border-color: var(--olt-navy) !important;
+}
+
+/* ---------- List groups ---------- */
+
+.list-group {
+  border-radius: var(--olt-radius);
+  overflow: hidden;
+}
+
+.list-group-item {
+  background-color: var(--olt-card) !important;
+  border-color: var(--olt-hairline) !important;
+  color: var(--olt-navy) !important;
+}
+
+.list-group-item.active {
+  background-color: var(--olt-navy) !important;
+  border-color: var(--olt-navy) !important;
+  color: var(--olt-cream) !important;
+}
+
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+  background-color: rgba(31, 42, 85, 0.05) !important;
+  color: var(--olt-navy) !important;
+}
+
+/* ---------- Tooltips & popovers ---------- */
+
+.tooltip-inner {
+  background-color: var(--olt-navy);
+  color: var(--olt-cream);
+  border-radius: var(--olt-radius-sm);
+  font-weight: 500;
+}
+
+.bs-tooltip-top .tooltip-arrow::before { border-top-color: var(--olt-navy); }
+.bs-tooltip-bottom .tooltip-arrow::before { border-bottom-color: var(--olt-navy); }
+.bs-tooltip-start .tooltip-arrow::before { border-left-color: var(--olt-navy); }
+.bs-tooltip-end .tooltip-arrow::before { border-right-color: var(--olt-navy); }
+
+.popover {
+  border: 1px solid var(--olt-hairline);
+  border-radius: var(--olt-radius);
+  box-shadow: var(--olt-shadow-card);
+}
+
+.popover-header {
+  background: #f3f1ea;
+  color: var(--olt-navy);
+  border-bottom: 1px solid var(--olt-hairline);
+  font-weight: 600;
+}
+
+/* ---------- Scholarsome-specific selectors ---------- */
+
+/*
+ * Scholarsome's app-shell, study mode, and flashcard surfaces. Selectors
+ * below match Scholarsome's component class conventions (kebab-case names
+ * scoped to a feature, e.g. "study-mode", "flashcard", "card-set"). They
+ * are intentionally broad-match so theme drift between Scholarsome
+ * versions doesn't immediately break the OLT skin.
+ */
+
+[class*="flashcard"],
+[class*="study-card"],
+[class*="study-mode"] [class*="card"],
+[class*="cards-page"] [class*="card"],
+[class*="set-page"] [class*="card"] {
+  background-color: var(--olt-card) !important;
+  border-color: var(--olt-hairline) !important;
+  color: var(--olt-navy) !important;
+  border-radius: var(--olt-radius) !important;
+}
+
+[class*="study-mode"] {
+  background-color: var(--olt-cream) !important;
+  color: var(--olt-navy);
+}
+
+[class*="study-mode"] [class*="progress"] {
+  background-color: rgba(31, 42, 85, 0.08) !important;
+}
+
+[class*="hero"],
+[class*="landing"],
+[class*="splash"] {
+  background-color: var(--olt-cream);
+  color: var(--olt-navy);
+}
+
+/* Italic accent for any element that opts into the OLT serif accent. */
+.olt-italic,
+em.olt-italic {
+  font-family: var(--olt-font-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--olt-accent-strong);
+}
+
+/* Hairline rule and section heads to mirror the wrapper landing. */
+hr {
+  border-color: var(--olt-hairline);
+  opacity: 1;
+}
+
+/* Scrollbar tint (WebKit). */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(31, 42, 85, 0.18);
+  border-radius: var(--olt-radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(31, 42, 85, 0.32);
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .btn {
+    transition: none !important;
+  }
+
+  .card:hover,
+  .btn:hover {
+    transform: none !important;
+  }
+}

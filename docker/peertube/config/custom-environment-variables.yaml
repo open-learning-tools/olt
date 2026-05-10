@@ -68,6 +68,9 @@ signup:
     __name: 'PEERTUBE_SIGNUP_ENABLED'
     __format: 'json'
 
+theme:
+  default: 'PEERTUBE_THEME_DEFAULT'
+
 client:
   menu:
     login:

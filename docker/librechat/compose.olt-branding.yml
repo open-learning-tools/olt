@@ -1,0 +1,46 @@
+# Optional Compose overlay that re-skins the LibreChat sub-service with OLT
+# branding (cream + navy + turquoise) to visually match the OLT wrapper landing
+# page and the olt.academy marketing site.
+#
+# Usage (run from the workspace root, alongside the existing overlays):
+#
+#   docker compose \
+#     --env-file .env \
+#     -f docker-compose.yml \
+#     -f docker/librechat/compose.xapi-forwarder.yml \
+#     -f docker/librechat/compose.olt-branding.yml \
+#     up --build librechat mongodb redis xapi-ingest ralph nginx
+#
+# What this overlay changes:
+#   * Sets the LibreChat runtime env vars that the upstream prebuilt image
+#     already honours for branding text:
+#       - APP_TITLE          -> sets the browser tab title and topbar text
+#       - CUSTOM_FOOTER      -> replaces the LibreChat footer with an OLT line
+#       - HELP_AND_FAQ_URL   -> points the help button at the OLT wrapper
+#   * Mounts the OLT logo PNG and the OLT brand CSS into the container at
+#     read-only paths under this folder. These files are intentionally placed
+#     in /app/client/public/assets/olt/ so they do not collide with the
+#     upstream LibreChat assets and are stable across image rebuilds.
+#
+# What this overlay deliberately does NOT change:
+#   * It does not modify the LibreChat startup command, so the existing
+#     openidStrategy patch in docker-compose.yml continues to apply.
+#   * It does not touch the xAPI forwarder wiring (xapi-forwarder.cjs and
+#     compose.xapi-forwarder.yml are independent and orthogonal).
+#   * It does not change endpoints, auth, model configuration, or model specs.
+
+services:
+  librechat:
+    environment:
+      APP_TITLE: "OLT AI Chat"
+      CUSTOM_FOOTER: "OLT AI Chat - part of [Open Learning Tools](http://olt.localhost). Every learning moment, measured and understood."
+      HELP_AND_FAQ_URL: "http://olt.localhost"
+    volumes:
+      # Logo asset, available to LibreChat at /assets/olt/olt-logo.png if any
+      # config (modelSpec.iconURL, MCP iconPath, etc.) wants to reference it
+      # via an absolute container path.
+      - ./docker/librechat/olt-logo.png:/app/client/public/assets/olt/olt-logo.png:ro
+      # OLT brand CSS, mounted alongside the logo for the same reason. See the
+      # README for why this file is not yet auto-injected into the served
+      # frontend HTML in local-dev.
+      - ./docker/librechat/olt-theme.css:/app/client/public/assets/olt/olt-theme.css:ro

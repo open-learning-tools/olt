@@ -17,8 +17,9 @@ PeerTube treats the public hostname as effectively permanent after first boot. U
 
 - `config/production.yaml`: minimal local defaults that can be mounted at `/config/production.yaml`.
 - `config/custom-environment-variables.yaml`: node-config mappings so root `.env` values override the local defaults.
-- `bootstrap-plugin.sh`: installs and configures the OpenID Connect auth plugin and, when mounted, the OLT xAPI plugin in the shared PeerTube data volume.
+- `bootstrap-plugin.sh`: installs and configures the OpenID Connect auth plugin and, when mounted, the OLT xAPI plugin and the OLT brand theme in the shared PeerTube data volume.
 - `plugins/peertube-plugin-olt-xapi`: local PeerTube plugin that emits demo xAPI statements for video uploads/views and browser playback events.
+- `plugins/peertube-theme-olt`: brand theme that re-skins PeerTube to match the OLT wrapper landing page (cream + navy + turquoise). Activated as the instance default via `theme.default` in `config/production.yaml`.
 - `env.local.example`: PeerTube-specific environment keys to mirror in the root `.env`.
 
 ## Parent Integration Notes

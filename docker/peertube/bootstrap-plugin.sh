@@ -4,6 +4,8 @@ set -eu
 PLUGIN_VERSION="${PEERTUBE_OIDC_PLUGIN_VERSION:-1.1.0}"
 XAPI_PLUGIN_VERSION="${PEERTUBE_OLT_XAPI_PLUGIN_VERSION:-0.1.0}"
 XAPI_PLUGIN_SOURCE="${PEERTUBE_OLT_XAPI_PLUGIN_SOURCE:-/bootstrap/plugins/peertube-plugin-olt-xapi}"
+THEME_PLUGIN_VERSION="${PEERTUBE_OLT_THEME_VERSION:-0.1.0}"
+THEME_PLUGIN_SOURCE="${PEERTUBE_OLT_THEME_SOURCE:-/bootstrap/plugins/peertube-theme-olt}"
 PLUGIN_DIR="/data/plugins"
 
 if ! command -v psql >/dev/null 2>&1; then
@@ -23,6 +25,12 @@ if [ -d "$XAPI_PLUGIN_SOURCE" ]; then
   npm install --omit=dev --no-audit --no-fund "$XAPI_PLUGIN_SOURCE"
 else
   echo "OLT xAPI plugin source not found at $XAPI_PLUGIN_SOURCE; skipping install." >&2
+fi
+
+if [ -d "$THEME_PLUGIN_SOURCE" ]; then
+  npm install --omit=dev --no-audit --no-fund "$THEME_PLUGIN_SOURCE"
+else
+  echo "OLT theme source not found at $THEME_PLUGIN_SOURCE; skipping install." >&2
 fi
 
 SETTINGS_JSON="$(node <<'NODE'
@@ -139,6 +147,45 @@ ON CONFLICT (name, type) DO UPDATE SET
   enabled = TRUE,
   uninstalled = FALSE,
   settings = EXCLUDED.settings,
+  "updatedAt" = now();
+SQL
+fi
+
+if [ -d "$THEME_PLUGIN_SOURCE" ]; then
+  psql "$PEERTUBE_DATABASE_URL" <<SQL
+INSERT INTO plugin (
+  name,
+  type,
+  version,
+  "latestVersion",
+  enabled,
+  uninstalled,
+  "peertubeEngine",
+  description,
+  homepage,
+  settings,
+  storage,
+  "createdAt",
+  "updatedAt"
+) VALUES (
+  'olt',
+  2,
+  '${THEME_PLUGIN_VERSION}',
+  NULL,
+  TRUE,
+  FALSE,
+  '>=5.0.0',
+  'Open Learning Tools brand theme for PeerTube.',
+  'https://olt.academy',
+  NULL,
+  NULL,
+  now(),
+  now()
+)
+ON CONFLICT (name, type) DO UPDATE SET
+  version = EXCLUDED.version,
+  enabled = TRUE,
+  uninstalled = FALSE,
   "updatedAt" = now();
 SQL
 fi

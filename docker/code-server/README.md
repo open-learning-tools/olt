@@ -67,6 +67,45 @@ Optional service identifiers:
 - `OLT_CODE_SERVER_PUBLIC_URL`, default `http://code.localhost`
 - `OLT_XAPI_INGEST_TIMEOUT_SECONDS`, default `3`
 
+## OLT visual branding
+
+The code-server chrome (title bar, activity bar, side bar, status bar, tabs,
+panel) is themed to match the OLT wrapper landing page (`web/src/App.css`)
+and the `olt.academy` marketing site. The editor surface itself is left clean
+white so source code stays high-contrast and readable.
+
+Approach: mount a curated `settings.json` containing
+`workbench.colorCustomizations` into code-server's user-data directory. A
+LinuxServer custom-cont-init hook copies it into place on every start.
+
+Brand tokens used (mapped from OLT's `oklch()` palette to VS Code hex):
+
+- Cream `#F8F8F4` -- side bar / panel surfaces
+- Navy `#1F2A55` -- title bar, status bar, activity-bar accent, primary text
+- Navy-deep `#161E3D` -- activity bar, inactive title bar
+- Navy-soft `#5C6478` -- secondary text, inactive tab text
+- Turquoise `#4FBED1` -- focus rings, active tab top border, badges, cursor,
+  selection, status-bar prominent items
+- Hairline `#D8D5CC` -- borders between regions
+
+Mount the assets:
+
+```yaml
+volumes:
+  - ./docker/code-server/user-settings/settings.json:/olt/code-server/user-settings/settings.json:ro
+  - ./docker/code-server/hooks/20-olt-branding.sh:/custom-cont-init.d/20-olt-branding.sh:ro
+```
+
+Optional environment overrides:
+
+- `OLT_CODE_SERVER_BRANDED_SETTINGS`, default `/olt/code-server/user-settings/settings.json`
+- `OLT_CODE_SERVER_USER_DIR`, default `/config/data/User` (matches
+  `user-data-dir: /config/data` in `config.yaml`)
+
+The hook overwrites `<user-data-dir>/User/settings.json` on every start so the
+OLT branding is canonical. Per-workspace tweaks should live in
+`workspace/olt.code-workspace` instead.
+
 ## Parent integration notes
 
 The parent stack mounts these assets in `docker-compose.yml`. Keep

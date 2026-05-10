@@ -20,12 +20,17 @@ The parent stack currently runs the app behind:
 - `proxy-headers.md`: identity and proxy headers the service receives after
   `oauth2-proxy` and Nginx authorize a request.
 - `olt-xapi-forwarder.js`: browser-side local-dev xAPI route visit forwarder.
+- `olt-theme.css`: OLT-branded reskin for Scholarsome (cream + navy +
+  turquoise) that overrides Bootstrap CSS variables and key chrome
+  selectors. Injected via the same head-script hook as the xAPI forwarder.
 - `build-xapi-head-script.mjs`: helper that renders a base64 head-script payload
-  from the public xAPI env vars and the forwarder.
+  bundling the OLT theme `<style>` block, public xAPI env vars, and the
+  forwarder script.
 - `xapi-head-snippet.template.html`: non-secret head-script snippet template for
-  configuring the browser forwarder.
+  configuring the browser forwarder and theme stylesheet via mounted static
+  assets.
 - `xapi-injection.md`: mount and proxy-injection notes for wiring the forwarder
-  into the parent stack.
+  and theme into the parent stack.
 
 ## Parent Integration Notes
 

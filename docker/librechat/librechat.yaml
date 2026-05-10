@@ -7,7 +7,8 @@ registration:
     - openid
 
 interface:
-  customWelcome: "Open Learning Tools AI Chat"
+  # Greeting on the empty-conversation landing screen. Branded for OLT.
+  customWelcome: "Welcome to OLT AI Chat — your Open Learning Tools learning assistant. Ask anything, and your activity flows into your shared learning record."
   modelSelect: true
   parameters: true
   presets: true

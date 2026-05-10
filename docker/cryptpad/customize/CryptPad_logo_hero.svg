@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Open Learning Tools
+SPDX-License-Identifier: AGPL-3.0-or-later
+
+OLT-branded replacement for the CryptPad hero/loading logo, served by the
+/api/logo endpoint and shown on the loading splash.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 1254 515"
+     preserveAspectRatio="xMidYMid meet"
+     role="img" aria-label="Open Learning Tools">
+  <title>Open Learning Tools</title>
+  <image href="/customize/olt-logo.png"
+         xlink:href="/customize/olt-logo.png"
+         x="0" y="0" width="1254" height="515" />
+</svg>

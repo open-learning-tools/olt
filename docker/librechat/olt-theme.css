@@ -1,0 +1,213 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap");
+
+/*
+ * OLT brand theme overrides for LibreChat.
+ *
+ * This stylesheet re-skins the LibreChat React/Tailwind frontend to visually
+ * match the OLT wrapper landing page (`web/src/App.css`) and the OLT
+ * marketing site (olt.academy / open-learning-nexus): cream background,
+ * deep navy primary, turquoise accent, hairline borders, 14px radii,
+ * Inter sans + Instrument Serif italic accent.
+ *
+ * Brand tokens (canonical OLT):
+ *   --olt-cream:    oklch(0.985 0.006 230)   ~ #F8F8F4
+ *   --olt-navy:     oklch(0.32  0.09  255)   ~ #1F2A55
+ *   --olt-navy-soft:oklch(0.45  0.02  260)   ~ #5C6478
+ *   --olt-accent:   oklch(0.7   0.1   200)   ~ #4FBED1   (turquoise)
+ *   --olt-hairline: oklch(0.86  0.01  80)    ~ #D8D5CC
+ *   --olt-card:     #ffffff
+ *   --olt-radius:   14px
+ *
+ * LibreChat exposes its theme as CSS variables on `:root` (light) and
+ * `:root.dark` (dark). The overrides below remap the LibreChat tokens to
+ * the OLT palette so every component that reads them inherits the OLT look.
+ *
+ * IMPORTANT: This file is mounted into the container, but is NOT yet
+ * auto-injected into the served LibreChat index.html in local-dev. See
+ * `docker/librechat/README.md` ("Branding limitations") for the reason and
+ * the parent-compose change required to wire it in.
+ */
+
+:root,
+:root.light,
+html.light,
+html {
+  /* OLT brand tokens, exposed for any selectors below that want them. */
+  --olt-cream: oklch(0.985 0.006 230);
+  --olt-navy: oklch(0.32 0.09 255);
+  --olt-navy-deep: oklch(0.21 0.045 255);
+  --olt-navy-soft: oklch(0.45 0.02 260);
+  --olt-accent: oklch(0.7 0.1 200);
+  --olt-hairline: oklch(0.86 0.01 80);
+  --olt-card: #ffffff;
+  --olt-radius: 14px;
+
+  /* ---- LibreChat surface colors (light mode) ---- */
+  --surface-primary: var(--olt-cream);
+  --surface-primary-alt: #ffffff;
+  --surface-primary-contrast: var(--olt-navy);
+  --surface-secondary: #ffffff;
+  --surface-secondary-alt: var(--olt-cream);
+  --surface-tertiary: var(--olt-cream);
+  --surface-tertiary-alt: #ffffff;
+  --surface-active: oklch(0.93 0.02 200);
+  --surface-active-alt: oklch(0.92 0.04 200);
+  --surface-hover: oklch(0.94 0.015 200);
+  --surface-hover-alt: oklch(0.93 0.025 200);
+  --surface-submit: var(--olt-navy);
+  --surface-submit-hover: oklch(0.28 0.05 255);
+  --surface-destructive: oklch(0.55 0.2 27);
+  --surface-destructive-hover: oklch(0.5 0.2 27);
+  --surface-chat: var(--olt-cream);
+  --surface-dialog: #ffffff;
+
+  /* ---- LibreChat text colors ---- */
+  --text-primary: var(--olt-navy);
+  --text-secondary: var(--olt-navy-soft);
+  --text-secondary-alt: var(--olt-navy-soft);
+  --text-tertiary: var(--olt-navy-soft);
+  --text-warning: oklch(0.68 0.16 45);
+
+  /* ---- LibreChat borders ---- */
+  --border-light: var(--olt-hairline);
+  --border-medium: var(--olt-hairline);
+  --border-medium-alt: var(--olt-hairline);
+  --border-heavy: var(--olt-navy-soft);
+  --border-xheavy: var(--olt-navy);
+  --ring: var(--olt-navy);
+  --ring-primary: var(--olt-navy);
+
+  /* ---- LibreChat brand accents ---- */
+  --brand-blue: var(--olt-accent);
+  --brand-purple: var(--olt-accent);
+  --presentation: #ffffff;
+
+  /* ---- Header / topbar ---- */
+  --header-primary: #ffffff;
+  --header-button-hover: oklch(0.94 0.015 200);
+
+  /* ---- Sidebar ---- */
+  --sidebar-surface-primary: #ffffff;
+  --sidebar-surface-secondary: var(--olt-cream);
+  --sidebar-surface-tertiary: oklch(0.94 0.015 200);
+  --sidebar-surface-active: oklch(0.92 0.04 200);
+  --sidebar-text-primary: var(--olt-navy);
+  --sidebar-text-secondary: var(--olt-navy-soft);
+}
+
+/* Dark-mode overrides: keep cream/navy intent but flip to a deep navy field
+ * with a light cream foreground, so OLT branding still reads in dark mode. */
+:root.dark,
+html.dark {
+  --surface-primary: var(--olt-navy-deep);
+  --surface-primary-alt: oklch(0.27 0.06 255);
+  --surface-primary-contrast: var(--olt-cream);
+  --surface-secondary: oklch(0.27 0.06 255);
+  --surface-secondary-alt: var(--olt-navy-deep);
+  --surface-tertiary: oklch(0.24 0.05 255);
+  --surface-tertiary-alt: oklch(0.27 0.06 255);
+  --surface-active: oklch(0.32 0.07 255);
+  --surface-active-alt: oklch(0.36 0.08 255);
+  --surface-hover: oklch(0.3 0.06 255);
+  --surface-hover-alt: oklch(0.34 0.07 255);
+  --surface-submit: var(--olt-accent);
+  --surface-submit-hover: oklch(0.62 0.11 200);
+  --surface-chat: var(--olt-navy-deep);
+  --surface-dialog: oklch(0.27 0.06 255);
+
+  --text-primary: var(--olt-cream);
+  --text-secondary: oklch(0.78 0.02 230);
+  --text-secondary-alt: oklch(0.78 0.02 230);
+  --text-tertiary: oklch(0.7 0.02 230);
+
+  --border-light: oklch(0.4 0.05 255);
+  --border-medium: oklch(0.45 0.05 255);
+  --border-medium-alt: oklch(0.45 0.05 255);
+  --border-heavy: oklch(0.55 0.06 255);
+  --border-xheavy: var(--olt-accent);
+  --ring: var(--olt-accent);
+  --ring-primary: var(--olt-accent);
+
+  --brand-blue: var(--olt-accent);
+  --brand-purple: var(--olt-accent);
+
+  --header-primary: oklch(0.24 0.05 255);
+  --header-button-hover: oklch(0.32 0.07 255);
+
+  --sidebar-surface-primary: oklch(0.24 0.05 255);
+  --sidebar-surface-secondary: var(--olt-navy-deep);
+  --sidebar-surface-tertiary: oklch(0.3 0.06 255);
+  --sidebar-surface-active: oklch(0.36 0.08 255);
+  --sidebar-text-primary: var(--olt-cream);
+  --sidebar-text-secondary: oklch(0.78 0.02 230);
+}
+
+/* ---- Typography: Inter sans + Instrument Serif italic accent ---- */
+html,
+body {
+  font-family:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  background: var(--surface-primary);
+  color: var(--text-primary);
+}
+
+::selection {
+  background: var(--olt-accent);
+  color: var(--olt-navy);
+}
+
+/* The custom welcome heading on the empty-conversation landing screen.
+ * We give the trailing italic word the OLT serif accent so it visually
+ * echoes the wrapper landing page ("Where would you like to /go/?"). */
+h1 em,
+h2 em,
+.olt-italic {
+  font-family: "Instrument Serif", "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--olt-accent);
+}
+
+/* ---- Shared OLT card / pill shapes ---- */
+button,
+.btn,
+[role="button"] {
+  border-radius: 9999px;
+}
+
+input,
+textarea,
+select,
+.form-input,
+[class*="rounded-xl"],
+[class*="rounded-2xl"] {
+  border-radius: var(--olt-radius);
+}
+
+/* Submit button on the chat composer: turn the LibreChat send button into
+ * an OLT-style navy pill on hover/active. */
+button[aria-label="Send message"],
+button[data-testid="send-button"] {
+  background-color: var(--surface-submit);
+  color: var(--olt-cream);
+}
+
+button[aria-label="Send message"]:hover,
+button[data-testid="send-button"]:hover {
+  background-color: var(--surface-submit-hover);
+}
+
+/* Footer line injected via CUSTOM_FOOTER: tone it to OLT muted navy. */
+footer,
+.text-token-text-tertiary {
+  color: var(--text-tertiary);
+}
+
+/* Hairline rules everywhere LibreChat draws a border-token border. */
+.border-token-border-light,
+.border-token-border-medium,
+.border-token-border-heavy {
+  border-color: var(--border-light);
+}

@@ -1,0 +1,25 @@
+{
+  "name": "peertube-theme-olt",
+  "version": "0.1.0",
+  "description": "Open Learning Tools brand theme for PeerTube (cream + navy + turquoise).",
+  "engine": {
+    "peertube": ">=5.0.0"
+  },
+  "keywords": [
+    "peertube",
+    "theme",
+    "olt",
+    "open-learning-tools"
+  ],
+  "homepage": "https://olt.academy",
+  "author": "Open Learning Tools",
+  "bugs": "https://github.com/open-learning-tools/open-learning-tools-peertube/issues",
+  "staticDirs": {
+    "fonts": "fonts"
+  },
+  "css": [
+    "assets/style.css"
+  ],
+  "clientScripts": [],
+  "translations": {}
+}

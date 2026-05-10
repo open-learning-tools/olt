@@ -51,6 +51,23 @@ instance:
   name: 'OLT Videos'
   short_description: 'Local OLT video service for development.'
   customizations:
+    # Defense-in-depth OLT brand tokens applied at the instance level so the
+    # very first paint shows the right cream/navy/turquoise palette even
+    # before the peertube-theme-olt plugin CSS finishes loading. The bulk
+    # of the re-skin lives in that plugin; this block only pins the few
+    # variables that show up in the initial render.
+    css: |
+      :root {
+        --bg: oklch(0.985 0.006 230);
+        --fg: oklch(0.32 0.09 255);
+        --primary: oklch(0.7 0.1 200);
+        --on-primary: oklch(0.32 0.09 255);
+        --border-primary: oklch(0.86 0.01 80);
+        --menu-bg: #ffffff;
+        --menu-fg: oklch(0.32 0.09 255);
+        --header-bg: oklch(1 0 0 / 0.85);
+      }
+      html, body { background: oklch(0.985 0.006 230); color: oklch(0.32 0.09 255); }
     javascript: |
       (function () {
         var path = window.location.pathname;
@@ -68,6 +85,11 @@ instance:
 
 signup:
   enabled: false
+
+# Activate the OLT brand theme by default for every visitor. The plugin
+# itself is installed and enabled by docker/peertube/bootstrap-plugin.sh.
+theme:
+  default: 'olt'
 
 client:
   menu:
